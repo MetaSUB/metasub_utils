@@ -49,11 +49,12 @@ def upload():
 
 
 @upload.command(name='city')
+@click.option('--dryrun/--wetrun', default=True)
 @click.option('--upload-only/--run-middleware', default=False)
 @click.argument('city_name')
-def cli_upload_city(upload_only, city_name):
+def cli_upload_city(dryrun, upload_only, city_name):
     result_dir = ATHENA.METASUB_RESULTS
-    upload_city(result_dir, city_name, upload_only=upload_only)
+    upload_city(result_dir, city_name, upload_only=upload_only, dryrun=dryrun)
 
 
 ###############################################################################
