@@ -3,6 +3,10 @@
 """Console script for metasub_utils."""
 
 import click
+from sys import (
+    stderr,
+    exit,
+)
 from .constants import ATHENA
 from .metagenscope import upload_city
 from .utils import (
@@ -51,10 +55,20 @@ def upload():
 @upload.command(name='city')
 @click.option('--dryrun/--wetrun', default=True)
 @click.option('--upload-only/--run-middleware', default=False)
-@click.argument('city_name')
-def cli_upload_city(dryrun, upload_only, city_name):
+@click.option('-n', '--display-name', default=None)
+@click.argument('city_names', nargs=-1)
+def cli_upload_city(dryrun, upload_only, display_name, city_names):
     result_dir = ATHENA.METASUB_RESULTS
-    upload_city(result_dir, city_name, upload_only=upload_only, dryrun=dryrun)
+    if len(city_names) == 1 and display_name is None:
+        display_name = as_display_name(city_names[0])
+    elif len(city_names) > 1 and display_name is None:
+        print('Display name cannot be blank if multiple cities are listed', file=stderr)
+        exit(1)
+    upload_cities(
+        result_dir, city_names, display_name,
+        upload_only=upload_only,
+        dryrun=dryrun
+    )
 
 
 ###############################################################################

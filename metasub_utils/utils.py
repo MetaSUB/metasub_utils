@@ -18,7 +18,7 @@ def get_canonical_city_names(lower=False):
     return city_names
 
 
-def display_name(name):
+def as_display_name(name):
     """ Return a name with spaces and first letters capitalized."""
     return ' '.join([
         tkn[:1].upper() + tkn[1:]
