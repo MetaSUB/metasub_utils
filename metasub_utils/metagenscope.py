@@ -1,5 +1,9 @@
-from .utils import get_complete_metadata, get_canonical_city_names
-from tempfiles import NamedTemporaryFile
+from .utils import (
+    get_complete_metadata,
+    get_canonical_city_names,
+    display_name,
+)
+from tempfile import NamedTemporaryFile
 from .constants import COLUMNS
 
 
@@ -12,7 +16,7 @@ def get_sample_names(city_name):
     metadata = get_complete_metadata()
     sample_names = set()
     for _, row in metadata.iterrows():
-        if row[COLUMNS.CITY].lower() != city_name.lower():
+        if row[COLUMNS.CITY].lower() != city_name:
             continue
         for id_name in COLUMNS.IDS:
             sample_names.add(row[COLMNS.IDS])
@@ -37,7 +41,7 @@ def build_file_manifest(result_dir, sample_names):
 def build_metadata_table(city_name):
     """Return the name of a temp file with metadata from the given city."""
     metadata = get_complete_metadata(uploadable=True)
-    city_metadata = metadata[metadata[COLUMNS.CITY].lower() == city_name.lower()]
+    city_metadata = metadata[metadata[COLUMNS.CITY].lower() == city_name]
     city_metadata_file_handle = NamedTemporaryFile(delete=False)
     city_metadata_file = city_metadata_file_handle.name()
     city_metadata_file_handle.close()
@@ -48,10 +52,12 @@ def build_metadata_table(city_name):
 
 def upload_city(result_dir, city_name, upload_only=False):
     """Upload a city to MGS and run middleware."""
-    assert city_name in get_canonical_city_names()
+    city_name = city_name.lower()
+    assert city_name in get_canonical_city_names(lower=True)
+    display_city_name = display_name(city_name)
     sample_names = get_sample_names(city_name)
     file_manifest = build_file_manifest(result_dir, sample_names)
-    upload_files_cmd = f'metagenscope upload files -g "{city_name}" -m {file_manifest}'
+    upload_files_cmd = f'metagenscope upload files -g "{display_city_name}" -m {file_manifest}'
     run_cmd(upload_files_cmd)
     file_manifest.delete()
 
@@ -63,7 +69,7 @@ def upload_city(result_dir, city_name, upload_only=False):
 
     if upload_only:
         return
-    group_middleware_cmd = f'metagenscope run middleware group "{city_name}"'
+    group_middleware_cmd = f'metagenscope run middleware group "{display_city_name}"'
     run_cmd(upload_metadata_cmd)
     for sample_name in sample_names:
         sample_middleware_cmd = f'metagenscope run middleware sample {sample_name}'

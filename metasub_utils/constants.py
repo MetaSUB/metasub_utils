@@ -3,8 +3,8 @@ from argparse import Namespace
 # Metadata
 METADATA = Namespace()
 METADATA.COMPLETE_TABLE_URL = 'https://raw.githubusercontent.com/dcdanko/MetaSUB-metadata/master/complete_metadata.csv'
-METADATA.UPLOADABLE_TABLE_URL = ''
-METADATA.CANONICAL_CITIES_URL = ''
+METADATA.UPLOADABLE_TABLE_URL = 'https://raw.githubusercontent.com/dcdanko/MetaSUB-metadata/master/upload_metadata.csv'
+METADATA.CANONICAL_CITIES_URL = 'https://raw.githubusercontent.com/dcdanko/MetaSUB-metadata/master/spreadsheets/city_names.csv'
 
 
 # MetaGenScope
