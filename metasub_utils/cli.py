@@ -8,10 +8,11 @@ from sys import (
     exit,
 )
 from .constants import ATHENA
-from .metagenscope import upload_city
+from .metagenscope import upload_cities
 from .utils import (
     get_complete_metadata,
     get_canonical_city_names,
+    as_display_name,
 )
 
 

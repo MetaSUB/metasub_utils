@@ -19,14 +19,15 @@ def run_cmd(cmd, dryrun=True):
 
 def get_sample_names(city_names):
     """Return a list of sample names for the city."""
+    city_names = [city_name.lower() for city_name in city_names]
     metadata = get_complete_metadata()
     sample_names = set()
     for _, row in metadata.iterrows():
-        if str(row[COLUMNS.CITY]).lower() not in city_name:
+        if str(row[COLUMNS.CITY]).lower() not in city_names:
             continue
         for id_name in COLUMNS.IDS:
             try:
-                sample_names.add(str(row[id_name]))
+                sample_names.add(str(row[id_name]).upper())
             except KeyError:
                 pass
     return sample_names
@@ -51,7 +52,8 @@ def build_file_manifest(result_dir, sample_names):
 def build_metadata_table(city_names):
     """Return the name of a temp file with metadata from the given city."""
     metadata = get_complete_metadata(uploadable=True)
-    city_metadata = metadata[metadata[COLUMNS.CITY].str.lower() in city_names]
+    city_metadata_rows = metadata[COLUMNS.CITY].str.lower().isin(city_names)
+    city_metadata = metadata[city_metadata_rows]
     city_metadata_file_handle = NamedTemporaryFile(suffix='.csv', mode='w', delete=False)
     city_metadata_file = city_metadata_file_handle.name
     city_metadata_file_handle.close()
