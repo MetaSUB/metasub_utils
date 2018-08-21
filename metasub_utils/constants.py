@@ -1,4 +1,9 @@
 from argparse import Namespace
+from os.path import join, dirname
+
+
+CODE_DIR = dirname(dirname(__file__))
+
 
 # Metadata
 METADATA = Namespace()
@@ -27,3 +32,10 @@ COLUMNS.IDS = set(
 # Athena
 ATHENA = Namespace()
 ATHENA.METASUB_RESULTS = '/athena/masonlab/scratch/projects/metagenomics/metasub/analysis/metasub_cap/.module_ultra/core_results'
+ATHENA.METASUB_DATA = '/athena/masonlab/scratch/projects/metagenomics/metasub/data'
+
+# Hudson Alpha
+HALPHA = Namespace()
+HALPHA.URL = 'http://{}:{}@gsldl.hudsonalpha.org/'
+HALPHA.FLOWCELL_FILENAME = join(CODE_DIR, 'tables/hudson_alpha_flowcells.csv')
+HALPHA.ATHENA_SL_LIBRARY = join(ATHENA.METASUB_DATA, 'hudson_alpha_library')

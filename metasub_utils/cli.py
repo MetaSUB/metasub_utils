@@ -13,6 +13,7 @@ from .utils import (
     get_complete_metadata,
     get_canonical_city_names,
 )
+from .hudson_alpha import process_flowcells
 
 
 @click.group()
@@ -74,5 +75,19 @@ def cli_upload_city(dryrun, upload_only, display_name, city_names):
 ###############################################################################
 
 
+@main.group()
+def download():
+    pass
+
+
+@download.command(name='ha')
+@click.option('--dryrun/--wetrun', default=True)
+@click.argument('username')
+@click.argument('password')
+def cli_download_ha_files(dryrun, username, password):
+    process_flowcells(dryrun, username, password)
+
+
+###############################################################################
 if __name__ == "__main__":
     main()
