@@ -36,6 +36,6 @@ ATHENA.METASUB_DATA = '/athena/masonlab/scratch/projects/metagenomics/metasub/da
 
 # Hudson Alpha
 HALPHA = Namespace()
-HALPHA.URL = 'http://{}:{}@gsldl.hudsonalpha.org/'
+HALPHA.URL = 'http://gsldl.hudsonalpha.org/'
 HALPHA.FLOWCELL_FILENAME = join(CODE_DIR, 'tables/hudson_alpha_flowcells.csv')
 HALPHA.ATHENA_SL_LIBRARY = join(ATHENA.METASUB_DATA, 'hudson_alpha_library')

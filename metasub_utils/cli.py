@@ -86,7 +86,7 @@ def download():
 @click.argument('username')
 @click.argument('password')
 def cli_download_ha_files(dryrun, username, password):
-    process_flowcells(dryrun, username, password)
+    process_flowcells(dryrun, (username, password))
 
 
 ###############################################################################
