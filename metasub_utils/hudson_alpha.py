@@ -6,7 +6,15 @@ Procedure for handling data from HA:
 3. The relevant file and filenames files hould be downloaded to this dir
 4. All fragmented files should be downloaded to the new dir
 5. All fragmented files should be concatenated within the dir and the fragments deleted.
-   Each file should now have an 'SL' name
+   Each file should now be given a name of the form 
+   <HA project ID>_<flowcell number>_<SL number>_[1,2].fastq.gz
+   The predicate of this name is the HA Unique ID
+
+--- 
+Procedure for back mapping results to HALib
+1. Make a map from current name to the HA Unique ID
+2. Build a table mapping old files to new names
+3. move and link back old files to new names
 """
 
 from .constants import HALPHA, ATHENA
@@ -84,7 +92,7 @@ def get_root_and_read_number(filepath):
 
 
 def download_files(dryrun, ha_auth, library_dir, ha_file_path, existing_slnames):
-    executor = ThreadPoolExecutor(max_workers=10)
+    executor = ThreadPoolExecutor(max_workers=50)
     futures = []
     with open(ha_file_path) as hfp:
         for line in hfp:
@@ -128,9 +136,9 @@ def handle_single_flowcell(dryrun, ha_auth,
         except AssertionError:
             print(f'UNKNOWN\t{existing_read_file}')
             continue
-        if root in names_in_library:
-            continue
         slname = name_map[root]
+        if slname in names_in_library:
+            continue
         existing_slnames.add(slname)
         new_read_filepath = f'{library_dir}/{slname}_{read_num}.fastq.gz'
         print(f'COPY\t{existing_read_file}\t{new_read_filepath}')
