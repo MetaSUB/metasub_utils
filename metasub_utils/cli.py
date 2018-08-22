@@ -14,7 +14,10 @@ from .utils import (
     get_canonical_city_names,
     as_display_name,
 )
-from .hudson_alpha import process_flowcells
+from .hudson_alpha import (
+    process_flowcells,
+    rename_sl_names_to_ha_unique,
+)
 
 
 @click.group()
@@ -90,5 +93,21 @@ def cli_download_ha_files(dryrun, username, password):
 
 
 ###############################################################################
+
+
+@main.group()
+def athena():
+    pass
+
+
+@athena.command(name='rename-sl-files')
+def cli_rename_sl_files():
+    """Print a two column file of old path to new path."""
+    rename_sl_names_to_ha_unique()
+
+
+###############################################################################
+
+
 if __name__ == "__main__":
     main()

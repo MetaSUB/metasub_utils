@@ -20,9 +20,19 @@ Procedure for back mapping results to HALib
 from .constants import HALPHA, ATHENA
 from glob import glob
 from os import makedirs
-from os.path import join, basename, isfile
+from os.path import join, basename, dirname, isfile
 from concurrent.futures import ThreadPoolExecutor
 import requests
+
+
+def rename_sl_names_to_ha_unique():
+    for filepath in glob(HALPHA.ATHENA_SL_LIBRARY + '/*/*/SL*.fastq.gz'):
+        tkns = filepath.split('/')
+        ha_project_id, flowcell_number, file_base = tkns[-3], tkns[-2], tkns[-1]
+        new_file_base = f'{ha_project_id}_{flowcell_number}_{file_base}'
+        new_filepath = join(dirname(filepath), new_file_base)
+        if not isfile(new_filepath):
+            print(f'{filepath} {new_filepath}')
 
 
 def download_file(url, path, auth):
