@@ -25,14 +25,47 @@ from concurrent.futures import ThreadPoolExecutor
 import requests
 
 
+###############################################################################
+"""
+Make migrations from current (aug 22, 2018) state of Athena to new HA Library based state.
+"""
+
+
+def rename_one_sl_path_to_ha_unique(filepath):
+    tkns = filepath.split('/')
+    ha_project_id, flowcell_number, file_base = tkns[-3], tkns[-2], tkns[-1]
+    new_file_base = f'{ha_project_id}_{flowcell_number}_{file_base}'
+    new_filepath = join(dirname(filepath), new_file_base)
+    return new_filepath
+
+
 def rename_sl_names_to_ha_unique():
     for filepath in glob(HALPHA.ATHENA_SL_LIBRARY + '/*/*/SL*.fastq.gz'):
-        tkns = filepath.split('/')
-        ha_project_id, flowcell_number, file_base = tkns[-3], tkns[-2], tkns[-1]
-        new_file_base = f'{ha_project_id}_{flowcell_number}_{file_base}'
-        new_filepath = join(dirname(filepath), new_file_base)
+        new_filepath = rename_one_sl_path_to_ha_unique(filepath)
         if not isfile(new_filepath):
             print(f'{filepath} {new_filepath}')
+
+
+def map_from_name_in_datasuper_to_ha_unique(source_fastqs_file):
+    name_map = {}
+    for line in source_fastqs_file:
+        tkns = line.split()
+        if '1.fastq' not in tkns[0]:
+            continue
+        ds_name = basename(tkns[0]).split('_1.')[0].split('.R1.')[0]
+        ha_unique = basename(rename_one_sl_path_to_ha_unique(tkns[1]))
+        assert ds_name not in name_map
+        name_map[ds_name] = ha_unique
+    return name_map
+
+
+
+
+###############################################################################
+
+"""
+Download data from Hudson Alpha.
+"""
 
 
 def download_file(url, path, auth):

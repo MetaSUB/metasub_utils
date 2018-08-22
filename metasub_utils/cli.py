@@ -17,6 +17,7 @@ from .utils import (
 from .hudson_alpha import (
     process_flowcells,
     rename_sl_names_to_ha_unique,
+    map_from_name_in_datasuper_to_ha_unique,
 )
 
 
@@ -104,6 +105,14 @@ def athena():
 def cli_rename_sl_files():
     """Print a two column file of old path to new path."""
     rename_sl_names_to_ha_unique()
+
+
+@athena.command(name='datasuper-to-hauniq')
+@click.argument('source_fastqs', type=click.File('r'))
+def cli_datasuper_to_hauniq(source_fastqs):
+    """Print a two column file of datasuper name to ha uniq."""
+    for ds_name, ha_uniq in map_from_name_in_datasuper_to_ha_unique(source_fastqs).items():
+        print(f'{ds_name} {ha_uniq}')
 
 
 ###############################################################################
