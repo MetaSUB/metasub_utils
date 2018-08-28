@@ -49,4 +49,4 @@ BRIDGES.METASUB_DATA = '/home/dcdanko/pylon5/MetaSUB'
 
 # Tables
 TABLES = Namespace()
-TABLES.SL_TBL = join(CODE_DIR, 'tables/datasuper_to_hauniq.tsv')
+TABLES.SL_TABLE = join(CODE_DIR, 'tables/datasuper_to_hauniq.tsv')

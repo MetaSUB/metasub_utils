@@ -44,6 +44,6 @@ def upload_one_metaspades_dir(server, mspades_dir, sl_tbl):
 
 def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
     sl_tbl = parse_sl_table()
-    server = SFTPKnex(username, password, dryrun=dryrun)
-    for metaspades_dir in get_bridges_metaspades_dirs():
-        upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
+    with SFTPKnex(username, password, dryrun=dryrun) as server:
+        for metaspades_dir in get_bridges_metaspades_dirs():
+            upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
