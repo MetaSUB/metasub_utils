@@ -13,6 +13,9 @@ class SFTPKnex:
     def close(self):
         self.knex.close()
 
+    def __enter__(self):
+        pass
+
     def __exit__(self):
         return self.close()
 
