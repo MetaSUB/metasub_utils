@@ -18,6 +18,7 @@ from .hudson_alpha import (
     process_flowcells,
     rename_sl_names_to_ha_unique,
     map_from_name_in_datasuper_to_ha_unique,
+    rename_existing_core_results,
 )
 from .assemblies import upload_metaspades_assemblies_from_bridges
 
@@ -122,6 +123,15 @@ def cli_rename_sl_files():
 def cli_datasuper_to_hauniq(source_fastqs):
     """Print a two column file of datasuper name to ha uniq."""
     for ds_name, ha_uniq in map_from_name_in_datasuper_to_ha_unique(source_fastqs).items():
+        print(f'{ds_name} {ha_uniq}')
+
+
+@athena.command(name='new-core-results')
+@click.argument('source_fastqs', type=click.File('r'))
+@click.argument('old_result_dir')
+def cli_new_core_results(source_fastqs, old_result_dir):
+    """Print a two column file of old result path to result path with ha uniq."""
+    for ds_name, ha_uniq in rename_existing_core_results(source_fastqs, old_result_dir).items():
         print(f'{ds_name} {ha_uniq}')
 
 
