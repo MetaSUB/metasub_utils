@@ -19,6 +19,7 @@ from .hudson_alpha import (
     rename_sl_names_to_ha_unique,
     map_from_name_in_datasuper_to_ha_unique,
 )
+from .assemblies import upload_metaspades_assemblies_from_bridges
 
 
 @click.group()
@@ -75,6 +76,15 @@ def cli_upload_city(dryrun, upload_only, display_name, city_names):
         upload_only=upload_only,
         dryrun=dryrun
     )
+
+
+@upload.command(name='assemblies')
+@click.option('--dryrun/--wetrun', default=True)
+@click.argument('username')
+@click.argument('password')
+def cli_upload_assemblies(dryrun, username, password):
+    """Upload assemblies from bridges to Zurich SFTP"""
+    upload_metaspades_assemblies_from_bridges(username, password, dryrun=dryrun)
 
 
 ###############################################################################

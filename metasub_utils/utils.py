@@ -1,5 +1,5 @@
 import pandas as pd
-from .constants import METADATA
+from .constants import METADATA, TABLES
 
 
 def get_complete_metadata(uploadable=False):
@@ -24,3 +24,15 @@ def as_display_name(name):
         tkn[:1].upper() + tkn[1:]
         for tkn in name.split('_')
     ])
+
+
+def parse_sl_table():
+    tbl = {}
+    with open(TABLES.SL_TABLE) as sl_file:
+        for line in sl_file:
+            line = line.strip()
+            if len(line) == 0:
+                continue
+            tkns = line.split('\t')
+            tbl[tkns[0]] = tkns[1]
+    return tbl
