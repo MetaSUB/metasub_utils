@@ -51,6 +51,8 @@ def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
             try:
                 upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
             except IndexError:
-                print(f'NO_UPLOAD {metaspades_dir}', file=stderr)
+                print(f'NO_UPLOAD INDEX_ERROR {metaspades_dir}', file=stderr)
+            except KeyError:
+                print(f'NO_UPLOAD KEY_ERROR {metaspades_dir}', file=stderr)
     finally:
         server.close()
