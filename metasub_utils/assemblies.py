@@ -10,7 +10,7 @@ def hauid_from_metaspades_dir(contig_path, sl_tbl):
     tkns = contig_path.split('haib')[1].split('/')
     haib = 'haib' + tkns[0]
     flowcell = tkns[1]
-    raw_id = tkns[2].split('_1.fastq.gz.metaspades')[0]
+    raw_id = tkns[2].split('_1.fastq.gz.metaspades')[0].split('.R1.fastq.gz.metaspades')[0]
     sl_id = sl_tbl[raw_id].split('_')[2]
     return haib, flowcell, sl_id
 
