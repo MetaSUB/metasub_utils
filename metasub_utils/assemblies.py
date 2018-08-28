@@ -16,6 +16,7 @@ def hauid_from_metaspades_dir(contig_path, sl_tbl):
 
 def get_bridges_metaspades_dirs():
     contig_files = glob(BRIDGES.METASUB_DATA + '/**/contigs.fasta')
+    print(contig_files)
     metaspades_dirs = {
         dirname(contig_file)
         for contig_file in contig_files
