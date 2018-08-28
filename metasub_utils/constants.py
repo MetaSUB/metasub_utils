@@ -39,7 +39,7 @@ HALPHA.ATHENA_SL_LIBRARY = join(ATHENA.METASUB_DATA, 'hudson_alpha_library')
 
 # SFTP Server
 ZURICH = Namespace()
-ZURICH.URL = 'sftp://metasub.ethz.ch'
+ZURICH.URL = 'metasub.ethz.ch'
 ZURICH.DATA = '/data/'
 ZURICH.ASSEMBLIES = '/assemblies/'
 
