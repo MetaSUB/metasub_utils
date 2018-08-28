@@ -25,7 +25,7 @@ def get_bridges_metaspades_dirs():
 
 def upload_one_metaspades_dir(server, mspades_dir, sl_tbl):
     hauid_tuple = hauid_from_metaspades_dir(mspades_dir, sl_tbl)
-    hauid_sname = '_'.join(hauid)
+    hauid_sname = '_'.join(hauid_tuple)
     remote_dir = f'{ZURICH.ASSEMBLIES}/{hauid_tuple[0]}/{hauid_tuple[1]}/{hauid_sname}.metaspades/'
     server.make_dirs(remote_dir)
     for subfile in glob(mspades_dir + '/*'):
@@ -44,6 +44,9 @@ def upload_one_metaspades_dir(server, mspades_dir, sl_tbl):
 
 def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
     sl_tbl = parse_sl_table()
-    with SFTPKnex(username, password, dryrun=dryrun) as server:
+    try:
+        server = SFTPKnex(username, password, dryrun=dryrun)
         for metaspades_dir in get_bridges_metaspades_dirs():
             upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
+    finally:
+        server.close()
