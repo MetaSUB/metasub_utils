@@ -3,6 +3,7 @@ from .constants import BRIDGES, ZURICH
 from os.path import join, dirname, isfile, basename
 from .utils import parse_sl_table
 from .sftp_server import SFTPKnex
+from sys import stderr
 
 
 def hauid_from_metaspades_dir(contig_path, sl_tbl):
@@ -16,7 +17,6 @@ def hauid_from_metaspades_dir(contig_path, sl_tbl):
 
 def get_bridges_metaspades_dirs():
     contig_files = glob(BRIDGES.METASUB_DATA + '/**/contigs.fasta', recursive=True)
-    print(contig_files)
     metaspades_dirs = {
         dirname(contig_file)
         for contig_file in contig_files
@@ -48,6 +48,9 @@ def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
     try:
         server = SFTPKnex(username, password, dryrun=dryrun)
         for metaspades_dir in get_bridges_metaspades_dirs():
-            upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
+            try:
+                upload_one_metaspades_dir(server, metaspades_dir, sl_tbl)
+            except IndexError:
+                print(f'NO_UPLOAD {metaspades_dir}', file=stderr)
     finally:
         server.close()
