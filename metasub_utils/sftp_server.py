@@ -6,7 +6,9 @@ class SFTPKnex:
 
     def __init__(self, username, password, dryrun=False):
         self.dryrun = dryrun
-        self.knex = pysftp.Connection(ZURICH.URL, username=username, password=password)
+        cnopts = pysftp.CnOpts()
+        cnopts.hostkeys = None
+        self.knex = pysftp.Connection(ZURICH.URL, username=username, password=password, cnopts=cnopts)
 
     def close(self):
         self.knex.close()
