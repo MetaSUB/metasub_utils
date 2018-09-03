@@ -33,6 +33,6 @@ def parse_sl_table():
             line = line.strip()
             if len(line) == 0:
                 continue
-            tkns = line.split('\t')
+            tkns = line.split()
             tbl[tkns[0]] = tkns[1]
     return tbl

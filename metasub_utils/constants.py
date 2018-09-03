@@ -41,7 +41,7 @@ HALPHA.ATHENA_SL_LIBRARY = join(ATHENA.METASUB_DATA, 'hudson_alpha_library')
 ZURICH = Namespace()
 ZURICH.URL = 'metasub.ethz.ch'
 ZURICH.DATA = '/data/'
-ZURICH.ASSEMBLIES = '/assemblies/'
+ZURICH.ASSEMBLIES = '/data/assemblies/'
 
 # BRIDGES
 BRIDGES = Namespace()
