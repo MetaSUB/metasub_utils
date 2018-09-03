@@ -1,6 +1,8 @@
 from glob import glob
 from .constants import BRIDGES, ZURICH
 from os.path import join, dirname, isfile, basename
+from os import makedirs
+from shutil import copyfile
 from .utils import parse_sl_table
 from .sftp_server import SFTPKnex
 from sys import stderr
@@ -43,6 +45,27 @@ def upload_one_metaspades_dir(server, mspades_dir, sl_tbl):
         server.upload_file(misc_file, remote_path)
 
 
+def copy_one_metaspades_dir(target_dir, mspades_dir, sl_tbl):
+    hauid_tuple = hauid_from_metaspades_dir(mspades_dir, sl_tbl)
+    hauid_sname = '_'.join(hauid_tuple)
+    target_dir_path = f'{target_dir}/{hauid_tuple[0]}/{hauid_tuple[1]}/{hauid_sname}.metaspades/'
+    makedirs(target_dir_path, exist_ok=True)
+    for subfile in glob(mspades_dir + '/*'):
+        if not isfile(subfile):
+            continue
+        target_file_path = target_dir_path + basename(subfile)
+        if not isfile(target_file_path):
+            copyfile(subfile, target_file_path)
+    misc_dir = target_dir_path + 'misc/'
+    makedirs(misc_dir, exist_ok=True)
+    for misc_file in glob(mspades_dir + 'misc/*'):
+        if not isfile(subfile):
+            continue
+        target_file_path = misc_dir + basename(misc_file)
+        if not isfile(target_file_path):
+            copyfile(misc_file, target_file_path)
+
+
 def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
     sl_tbl = parse_sl_table()
     try:
@@ -56,3 +79,14 @@ def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
                 print(f'NO_UPLOAD KEY_ERROR {metaspades_dir}', file=stderr)
     finally:
         server.close()
+
+
+def copy_metaspades_assemblies_from_bridges(target_dir, dryrun=False):
+    sl_tbl = parse_sl_table()
+    for metaspades_dir in get_bridges_metaspades_dirs():
+        try:
+            copy_one_metaspades_dir(target_dir, metaspades_dir, sl_tbl)
+        except IndexError:
+            print(f'NO_COPY INDEX_ERROR {metaspades_dir}', file=stderr)
+        except KeyError:
+            print(f'NO_COPY KEY_ERROR {metaspades_dir}', file=stderr)

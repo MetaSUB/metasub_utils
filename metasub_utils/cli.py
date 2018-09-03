@@ -92,6 +92,20 @@ def cli_upload_assemblies(dryrun, username, password):
 
 
 @main.group()
+def copy():
+    pass
+
+
+@copy.command(name='assemblies')
+@click.argument('target_dir')
+def cli_copy_assemblies(target_dir):
+    """Copy assemblies to a new dir"""
+    copy_metaspades_assemblies_from_bridges(target_dir)
+
+###############################################################################
+
+
+@main.group()
 def download():
     pass
 
