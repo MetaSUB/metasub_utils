@@ -74,7 +74,7 @@ def cli_list_wasabi_files(profile_name):
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.argument('profile_name', default='wasabi')
 @click.argument('target_dir', default='assemblies')
-def cli_download_contig_files(profile_name, target_dir):
+def cli_download_contig_files(dryrun, profile_name, target_dir):
     """Download contig files."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.download_contigs(
