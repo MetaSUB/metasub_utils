@@ -72,7 +72,7 @@ def cli_list_wasabi_files(profile_name):
 
 @wasabi.command('download-contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
-@click.argument('profile_name', default='wasabi')
+@click.option('-p', '--profile-name', default='wasabi')
 @click.argument('target_dir', default='assemblies')
 def cli_download_contig_files(dryrun, profile_name, target_dir):
     """Download contig files from wasabi."""
@@ -85,7 +85,7 @@ def cli_download_contig_files(dryrun, profile_name, target_dir):
 
 @wasabi.command('upload-results')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
-@click.argument('profile_name', default='wasabi')
+@click.option('-p', '--profile-name', default='wasabi')
 @click.argument('result_dir', default=ATHENA.METASUB_RESULTS)
 def cli_upload_results(dryrun, profile_name, result_dir):
     """Upload CAP results to wasabi."""

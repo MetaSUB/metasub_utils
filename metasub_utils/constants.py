@@ -28,7 +28,7 @@ COLUMNS.IDS = set(
 
 # Athena
 ATHENA = Namespace()
-ATHENA.METASUB_RESULTS = '/athena/masonlab/scratch/projects/metagenomics/metasub/analysis/metasub_cap/.module_ultra/core_results'
+ATHENA.METASUB_RESULTS = '/athena/masonlab/scratch/projects/metagenomics/metasub/analysis/new_metasub_cap/.module_ultra/core_results'
 ATHENA.METASUB_DATA = '/athena/masonlab/scratch/projects/metagenomics/metasub/data'
 
 # Hudson Alpha
