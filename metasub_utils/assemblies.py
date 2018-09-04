@@ -81,7 +81,7 @@ def upload_metaspades_assemblies_from_bridges(username, password, dryrun=False):
         server.close()
 
 
-def copy_metaspades_assemblies_from_bridges(target_dir, dryrun=False):
+def copy_metaspades_assemblies_from_bridges(target_dir):
     sl_tbl = parse_sl_table()
     for metaspades_dir in get_bridges_metaspades_dirs():
         try:

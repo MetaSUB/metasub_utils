@@ -21,6 +21,7 @@ from .hudson_alpha import (
     rename_existing_core_results,
 )
 from .assemblies import upload_metaspades_assemblies_from_bridges
+from .wasabi_bucket import WasabiBucket
 
 
 @click.group()
@@ -51,6 +52,35 @@ def cli_get_metadata(uploadable):
     tbl = get_complete_metadata(uploadable=uploadable)
     print(tbl.to_csv())
 
+
+###############################################################################
+
+
+@get.group()
+def wasabi():
+    pass
+
+
+@wasabi.command('list')
+@click.argument('profile_name', default='wasabi')
+def cli_list_wasabi_files(profile_name):
+    """List all files in the wasabi bucket."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    for file_key in wasabi_bucket.list_files():
+        print(file_key)
+
+
+@wasabi.command('download-contigs')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.argument('profile_name', default='wasabi')
+@click.argument('target_dir', default='assemblies')
+def cli_download_contig_files(profile_name, target_dir):
+    """Download contig files."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.download_contigs(
+        target_dir=target_dir,
+        dryrun=dryrun,
+    )
 
 ###############################################################################
 

@@ -50,3 +50,8 @@ BRIDGES.METASUB_DATA = '/home/dcdanko/pylon5/MetaSUB'
 # Tables
 TABLES = Namespace()
 TABLES.SL_TABLE = join(CODE_DIR, 'tables/datasuper_to_hauniq.tsv')
+
+# Wasabi
+WASABI = Namespace()
+WASABI.BUCKET_NAME = 'metasub'
+WASABI.ENDPOINT_URL = 'https://s3.wasabisys.com'
