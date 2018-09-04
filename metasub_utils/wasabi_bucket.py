@@ -24,7 +24,7 @@ class WasabiBucket:
     def download_contigs(self,
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
         """Download contigs."""
-        for key in self.objects.all():
+        for key in self.bucket.objects.all():
             if 'assemblies' not in key.key or contig_file not in key.key:
                 continue
 
