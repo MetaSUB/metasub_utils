@@ -56,7 +56,7 @@ def cli_get_metadata(uploadable):
 ###############################################################################
 
 
-@get.group()
+@main.group()
 def wasabi():
     pass
 
@@ -75,12 +75,26 @@ def cli_list_wasabi_files(profile_name):
 @click.argument('profile_name', default='wasabi')
 @click.argument('target_dir', default='assemblies')
 def cli_download_contig_files(dryrun, profile_name, target_dir):
-    """Download contig files."""
+    """Download contig files from wasabi."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.download_contigs(
         target_dir=target_dir,
         dryrun=dryrun,
     )
+
+
+@wasabi.command('upload-results')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.argument('profile_name', default='wasabi')
+@click.argument('result_dir', default=ATHENA.METASUB_RESULTS)
+def cli_upload_results(dryrun, profile_name, result_dir):
+    """Upload CAP results to wasabi."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.upload_results(
+        result_dir=result_dir,
+        dryrun=dryrun,
+    )
+
 
 ###############################################################################
 

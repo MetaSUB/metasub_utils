@@ -2,8 +2,8 @@ import boto3
 import botocore
 from os.path import join, dirname, basename, isfile
 from os import makedirs
-from .constants import WASABI
-
+from .constants import WASABI, ATHENA
+from glob import glob
 
 
 class WasabiBucket:
@@ -18,7 +18,7 @@ class WasabiBucket:
 
     def list_files(self):
         """Return a list of all files in the bucket."""
-        return set([key.key for key in self.bucket.objects.all()])
+        return {key.key for key in self.bucket.objects.all()}
 
 
     def download_contigs(self,
@@ -41,3 +41,19 @@ class WasabiBucket:
             if not dryrun:
                 makedirs(dirname(local_path), exist_ok=True)
                 self.bucket.download_file(key.key, local_path)
+
+
+    def upload_results(self, result_dir=ATHENA.METASUB_RESULTS, dryrun=True):
+        all_uploaded_results = {
+            basename(key)
+            for key in self.list_files()
+            if 'cap_analysis' in key
+        }
+        for result_file in glob(f'{result_dir}/*/*'):
+            if basename(result_file) in all_uploaded_results:
+                continue
+            tkns = result_file.split('/')
+            remote_key = f'cap_analysis/{tkns[-2]}/{tkns[-1]}'
+            print(f'WASABI UPLOADING {result_file} {remote_key}')
+            if not dryrun:
+                self.bucket.upload_file(result_file, remote_key)
