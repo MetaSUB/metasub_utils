@@ -35,9 +35,9 @@ class WasabiBucket:
                 key_dirs,
                 contig_file,
             )
-            makedirs(dirname(local_path), exist_ok=True)
             if isfile(local_path):
                 continue
             print(f'WASABI DOWNLOADING {key.key} {local_path}')
             if not dryrun:
-                self.bucket.download_file(key, local_path)
+                makedirs(dirname(local_path), exist_ok=True)
+                self.bucket.download_file(key.key, local_path)
