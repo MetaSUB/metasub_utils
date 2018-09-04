@@ -1,6 +1,6 @@
 import boto3
 import botocore
-from os.path import join, dirname
+from os.path import join, dirname, basename, isfile
 from os import makedirs
 from .constants import WASABI
 
@@ -25,7 +25,7 @@ class WasabiBucket:
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
         """Download contigs."""
         for key in self.bucket.objects.all():
-            if 'assemblies' not in key.key or contig_file not in key.key:
+            if 'assemblies' not in key.key or contig_file != basename(key.key):
                 continue
 
             key_path = key.key.split('assemblies/')[1]
@@ -36,6 +36,8 @@ class WasabiBucket:
                 contig_file,
             )
             makedirs(dirname(local_path), exist_ok=True)
+            if isfile(local_path):
+                continue
             print(f'WASABI DOWNLOADING {key.key} {local_path}')
             if not dryrun:
                 self.bucket.download_file(key, local_path)
