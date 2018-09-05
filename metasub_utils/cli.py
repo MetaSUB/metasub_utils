@@ -98,6 +98,17 @@ def cli_upload_results(dryrun, profile_name, result_dir):
         dryrun=dryrun,
     )
 
+@wasabi.command('upload-data')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.argument('data_dir', default=ATHENA.HALPHA_LIBRARY)
+def cli_upload_raw_data(dryrun, profile_name, data_dir):
+    """Upload CAP results to wasabi. Only works on Athena."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.upload_raw_data(
+        data_dir=data_dir,
+        dryrun=dryrun,
+    )
 
 @wasabi.command('upload-contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)

@@ -49,6 +49,19 @@ class WasabiBucket:
                 continue
             self.download(key, local_path, dryrun)
 
+    def upload_raw_data(self, data_dir=ATHENA.HALPHA_LIBRARY, dryrun=True):
+        all_uploaded_results = {
+            basename(key)
+            for key in self.list_files()
+            if 'data' in key
+        }
+        for result_file in glob(f'{data_dir}/*/*/*'):
+            if basename(result_file) in all_uploaded_results:
+                continue
+            tkns = result_file.split('/')
+            remote_key = f'data/{data_dir}/{tkns[-3]}/{tkns[-2]}/{tkns[-1]}'
+            self.upload(result_file, remote_key, dryrun)
+
     def upload_results(self, result_dir=ATHENA.METASUB_RESULTS, dryrun=True):
         all_uploaded_results = {
             basename(key)
