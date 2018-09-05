@@ -28,7 +28,7 @@ COLUMNS.IDS = set(
 
 # Athena
 ATHENA = Namespace()
-ATHENA.METASUB_RESULTS = '/athena/masonlab/scratch/projects/metagenomics/metasub/analysis/metasub_cap/.module_ultra/core_results'
+ATHENA.METASUB_RESULTS = '/athena/masonlab/scratch/projects/metagenomics/metasub/analysis/new_metasub_cap/.module_ultra/core_results'
 ATHENA.METASUB_DATA = '/athena/masonlab/scratch/projects/metagenomics/metasub/data'
 
 # Hudson Alpha
@@ -46,7 +46,13 @@ ZURICH.ASSEMBLIES = '/data/assemblies/'
 # BRIDGES
 BRIDGES = Namespace()
 BRIDGES.METASUB_DATA = '/home/dcdanko/pylon5/MetaSUB'
+BRIDGES.ASSEMBLIES = '/home/dcdanko/pylon5/metasub_assemblies'
 
 # Tables
 TABLES = Namespace()
 TABLES.SL_TABLE = join(CODE_DIR, 'tables/datasuper_to_hauniq.tsv')
+
+# Wasabi
+WASABI = Namespace()
+WASABI.BUCKET_NAME = 'metasub'
+WASABI.ENDPOINT_URL = 'https://s3.wasabisys.com'
