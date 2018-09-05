@@ -7,7 +7,7 @@ from sys import (
     stderr,
     exit,
 )
-from .constants import ATHENA
+from .constants import ATHENA, BRIDGES
 from .metagenscope import upload_cities
 from .utils import (
     get_complete_metadata,
