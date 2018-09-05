@@ -99,6 +99,19 @@ def cli_upload_results(dryrun, profile_name, result_dir):
     )
 
 
+@wasabi.command('upload-contigs')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.argument('result_dir', default=BRIDGES.ASSEMBLIES)
+def cli_upload_contigs(dryrun, profile_name, result_dir):
+    """Upload CAP results to wasabi."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.upload_contigs(
+        result_dir=result_dir,
+        dryrun=dryrun,
+    )
+
+
 ###############################################################################
 
 
