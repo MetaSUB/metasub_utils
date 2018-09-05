@@ -144,13 +144,13 @@ def parse_filename(ha_filename_path):
 def get_root_and_read_number(filepath):
     filename = basename(filepath)
     if '_1.' in filename:
-        return filename.split('_1.')[0], '1'
+        return filename.split('_1.')[0].split('_')[-1], '1'
     elif '.R1.' in filename:
-        return filename.split('.R1.')[0], '1'
+        return filename.split('.R1.')[0].split('_')[-1], '1'
     elif '_2.' in filename:
-        return filename.split('_2.')[0], '2'
+        return filename.split('_2.')[0].split('_')[-1], '2'
     elif '.R2.' in filename:
-        return filename.split('.R2.')[0], '2'
+        return filename.split('.R2.')[0].split('_')[-1], '2'
     assert False, filepath
 
 
