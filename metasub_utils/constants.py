@@ -46,6 +46,7 @@ ZURICH.ASSEMBLIES = '/data/assemblies/'
 # BRIDGES
 BRIDGES = Namespace()
 BRIDGES.METASUB_DATA = '/home/dcdanko/pylon5/MetaSUB'
+BRIDGES.ASSEMBLIES = '/home/dcdanko/pylon5/metasub_assemblies'
 
 # Tables
 TABLES = Namespace()

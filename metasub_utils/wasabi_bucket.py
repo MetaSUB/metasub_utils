@@ -9,17 +9,27 @@ from glob import glob
 class WasabiBucket:
     """Represents the metasub data bucket on Wasabi (an s3 clone)."""
 
-
     def __init__(self, profile_name=None):
         self.session = boto3.Session(profile_name=profile_name)
         self.s3 = self.session.resource('s3', endpoint_url=WASABI.ENDPOINT_URL)
         self.bucket = self.s3.Bucket(WASABI.BUCKET_NAME)
 
-
     def list_files(self):
         """Return a list of all files in the bucket."""
         return {key.key for key in self.bucket.objects.all()}
 
+    def upload(self, local_file, remote_key, dryrun):
+        print(f'WASABI UPLOADING {result_file} {remote_key}')
+        if not dryrun:
+            self.bucket.upload_file(local_file, remote_key)
+
+    def download(self, key, local_path, dryrun):
+        if type(key) is not str:
+            key = key.key
+        print(f'WASABI DOWNLOADING {key} {local_path}')
+        if not dryrun:
+            makedirs(dirname(local_path), exist_ok=True)
+            self.bucket.download_file(key, local_path)
 
     def download_contigs(self,
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
@@ -37,11 +47,7 @@ class WasabiBucket:
             )
             if isfile(local_path):
                 continue
-            print(f'WASABI DOWNLOADING {key.key} {local_path}')
-            if not dryrun:
-                makedirs(dirname(local_path), exist_ok=True)
-                self.bucket.download_file(key.key, local_path)
-
+            self.download(key, local_path, dryrun)
 
     def upload_results(self, result_dir=ATHENA.METASUB_RESULTS, dryrun=True):
         all_uploaded_results = {
@@ -54,6 +60,17 @@ class WasabiBucket:
                 continue
             tkns = result_file.split('/')
             remote_key = f'cap_analysis/{tkns[-2]}/{tkns[-1]}'
-            print(f'WASABI UPLOADING {result_file} {remote_key}')
-            if not dryrun:
-                self.bucket.upload_file(result_file, remote_key)
+            self.upload(result_file, remote_key, dryrun)
+
+    def upload_contigs(self, result_dir=BRIDGES.ASSEMBLIES, dryrun=True):
+        all_uploaded_results = {
+            basename(dirname(key))
+            for key in self.list_files()
+            if 'assemblies' in key
+        }
+        for result_file in glob(f'{result_dir}/**/*'):
+            if basename(dirname(result_file)) in all_uploaded_results:
+                continue
+            result_root = result_file.split(result_dir)[1]
+            remote_key = f'assemblies/{result_root}'
+            self.upload(result_file, remote_key, dryrun)
