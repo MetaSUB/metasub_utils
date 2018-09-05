@@ -20,7 +20,10 @@ from .hudson_alpha import (
     map_from_name_in_datasuper_to_ha_unique,
     rename_existing_core_results,
 )
-from .assemblies import upload_metaspades_assemblies_from_bridges
+from .assemblies import (
+    upload_metaspades_assemblies_from_bridges,
+    copy_metaspades_assemblies_from_bridges,
+)
 
 
 @click.group()
