@@ -19,7 +19,7 @@ class WasabiBucket:
         return {key.key for key in self.bucket.objects.all()}
 
     def upload(self, local_file, remote_key, dryrun):
-        print(f'WASABI UPLOADING {result_file} {remote_key}')
+        print(f'WASABI UPLOADING {local_file} {remote_key}')
         if not dryrun:
             self.bucket.upload_file(local_file, remote_key)
 
