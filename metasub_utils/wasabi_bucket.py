@@ -2,7 +2,7 @@ import boto3
 import botocore
 from os.path import join, dirname, basename, isfile
 from os import makedirs
-from .constants import WASABI, ATHENA
+from .constants import WASABI, ATHENA, BRIDGES
 from glob import glob
 
 
