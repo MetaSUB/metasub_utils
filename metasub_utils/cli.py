@@ -91,7 +91,7 @@ def cli_download_contig_files(dryrun, profile_name, target_dir):
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('result_dir', default=ATHENA.METASUB_RESULTS)
 def cli_upload_results(dryrun, profile_name, result_dir):
-    """Upload CAP results to wasabi."""
+    """Upload CAP results to wasabi. Only works on Athena."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.upload_results(
         result_dir=result_dir,
@@ -104,7 +104,7 @@ def cli_upload_results(dryrun, profile_name, result_dir):
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('result_dir', default=BRIDGES.ASSEMBLIES)
 def cli_upload_contigs(dryrun, profile_name, result_dir):
-    """Upload CAP results to wasabi."""
+    """Upload CAP results to wasabi. Only works on bridges."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.upload_contigs(
         result_dir=result_dir,
@@ -126,6 +126,7 @@ def upload():
 @click.option('-n', '--display-name', default=None)
 @click.argument('city_names', nargs=-1)
 def cli_upload_city(dryrun, upload_only, display_name, city_names):
+    """Upload a city to MetaGenScope. Only works on Athena."""
     result_dir = ATHENA.METASUB_RESULTS
     if len(city_names) == 1 and display_name is None:
         display_name = as_display_name(city_names[0])
@@ -159,7 +160,7 @@ def copy():
 @copy.command(name='assemblies')
 @click.argument('target_dir')
 def cli_copy_assemblies(target_dir):
-    """Copy assemblies to a new dir"""
+    """Copy assemblies to a new dir on bridges."""
     copy_metaspades_assemblies_from_bridges(target_dir)
 
 ###############################################################################
@@ -175,6 +176,7 @@ def download():
 @click.argument('username')
 @click.argument('password')
 def cli_download_ha_files(dryrun, username, password):
+    """Download flowcells from Hudson Alpha, intended for Athena."""
     process_flowcells(dryrun, (username, password))
 
 

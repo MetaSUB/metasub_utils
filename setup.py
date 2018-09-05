@@ -27,7 +27,7 @@ test_requirements = [
 setup(
     name='metasub_utils',
     version='0.1.0',
-    description="Utilities for the MetaSUB COnsortium",
+    description="Utilities for the MetaSUB Consortium",
     long_description=readme + '\n\n' + history,
     author="David C. Danko",
     author_email='dcdanko@gmail.com',
