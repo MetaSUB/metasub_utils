@@ -144,17 +144,18 @@ def parse_filename(ha_filename_path):
 def get_root_and_read_number(filepath):
     filename = basename(filepath)
     if '_1.' in filename:
-        return filename.split('_1.')[0].split('_')[-1], '1'
+        return filename.split('_1.')[0], '1'
     elif '.R1.' in filename:
-        return filename.split('.R1.')[0].split('_')[-1], '1'
+        return filename.split('.R1.')[0], '1'
     elif '_2.' in filename:
-        return filename.split('_2.')[0].split('_')[-1], '2'
+        return filename.split('_2.')[0], '2'
     elif '.R2.' in filename:
-        return filename.split('.R2.')[0].split('_')[-1], '2'
+        return filename.split('.R2.')[0], '2'
     assert False, filepath
 
 
-def download_files(dryrun, ha_auth, library_dir, ha_file_path, existing_slnames):
+def download_files(dryrun, ha_auth, library_dir, ha_file_path, existing_ha_uids):
+    existing_slnames = {hauid.split('_')[-1] for hauid in existing_ha_uids}
     executor = ThreadPoolExecutor(max_workers=50)
     futures = []
     with open(ha_file_path) as hfp:
@@ -180,30 +181,11 @@ def handle_single_flowcell(dryrun, ha_auth,
                            library_dir,
                            metasub_project_name, ha_project_id, flowcell_number,
                            ha_file_path, ha_filename_path):
-    existing_file_dir = join(
-        ATHENA.METASUB_DATA, metasub_project_name, ha_project_id, flowcell_number
-    )
-    name_map = parse_filename(ha_filename_path)
-    existing_read_files = glob(existing_file_dir + '/*.fastq.gz')
     names_in_library = set()
     for in_library in glob(library_dir + '/*.fastq.gz'):
         try:
             root, _ = get_root_and_read_number(in_library)
+            names_in_library.add(root)
         except AssertionError:
             continue
-        names_in_library.add(root)
-    existing_slnames = set()
-    for existing_read_file in existing_read_files:
-        try:
-            root, read_num = get_root_and_read_number(existing_read_file)
-        except AssertionError:
-            print(f'UNKNOWN\t{existing_read_file}')
-            continue
-        slname = name_map[root]
-        if slname in names_in_library:
-            continue
-        existing_slnames.add(slname)
-        new_read_filepath = f'{library_dir}/{ha_project_id}_{flowcell_number}_{slname}_{read_num}.fastq.gz'
-        if not isfile(new_read_filepath):
-            print(f'COPY\t{existing_read_file}\t{new_read_filepath}')
-    download_files(dryrun, ha_auth, library_dir, ha_file_path, existing_slnames | names_in_library)
+    download_files(dryrun, ha_auth, library_dir, ha_file_path, names_in_library)
