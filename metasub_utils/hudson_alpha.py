@@ -203,6 +203,7 @@ def handle_single_flowcell(dryrun, ha_auth,
         if slname in names_in_library:
             continue
         existing_slnames.add(slname)
-        new_read_filepath = f'{library_dir}/{slname}_{read_num}.fastq.gz'
-        print(f'COPY\t{existing_read_file}\t{new_read_filepath}')
+        new_read_filepath = f'{library_dir}/{ha_project_id}_{flowcell_number}_{slname}_{read_num}.fastq.gz'
+        if not isfile(new_read_filepath):
+            print(f'COPY\t{existing_read_file}\t{new_read_filepath}')
     download_files(dryrun, ha_auth, library_dir, ha_file_path, existing_slnames | names_in_library)
