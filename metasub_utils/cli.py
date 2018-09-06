@@ -84,6 +84,7 @@ def cli_download_contig_files(dryrun, profile_name, target_dir):
         target_dir=target_dir,
         dryrun=dryrun,
     )
+    wasabi_bucket.close()
 
 
 @wasabi.command('upload-results')
@@ -97,6 +98,7 @@ def cli_upload_results(dryrun, profile_name, result_dir):
         result_dir=result_dir,
         dryrun=dryrun,
     )
+    wasabi_bucket.close()
 
 @wasabi.command('upload-data')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
@@ -109,6 +111,7 @@ def cli_upload_raw_data(dryrun, profile_name, data_dir):
         data_dir=data_dir,
         dryrun=dryrun,
     )
+    wasabi_bucket.close()
 
 @wasabi.command('upload-contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
@@ -121,6 +124,7 @@ def cli_upload_contigs(dryrun, profile_name, result_dir):
         result_dir=result_dir,
         dryrun=dryrun,
     )
+    wasabi_bucket.close()
 
 
 ###############################################################################
