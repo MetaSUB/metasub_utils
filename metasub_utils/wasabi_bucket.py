@@ -30,7 +30,8 @@ class WasabiBucket:
     def close(self):
         self.closed = True
         for future in self.futures:
-            future.result()
+            if future:
+                future.result()
 
     def list_files(self):
         """Return a list of all files in the bucket."""
