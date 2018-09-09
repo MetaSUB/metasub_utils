@@ -50,6 +50,26 @@ class WasabiBucket:
             makedirs(dirname(local_path), exist_ok=True)
             self.add_job(lambda: self.bucket.download_file(key, local_path))
 
+    def list_unassembled_data(self):
+        all_assembled_keys = {
+            basename(dirname(key)).split('.')[0]
+            for key in self.list_files() if 'assemblies' in key
+        }
+        unassembled_data = {
+            key for key in self.list_files()
+            if 'data' == key.split('/')[0] and
+            '_'.join(basename(key).split('_')[:3]) not in all_assembled_keys
+        }
+        return unassembled_data
+
+    def download_unassembled_data(self, target_dir='data', dryrun=True):
+        """Download data without contigs."""
+        for key in self.list_unassembled_data():
+            local_path = target_dir + '/' + key.split('data/')[1]
+            if isfile(local_path):
+                continue
+            self.download(key, local_path, dryrun)
+
     def download_contigs(self,
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
         """Download contigs."""
