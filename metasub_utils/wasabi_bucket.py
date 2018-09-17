@@ -5,12 +5,13 @@ from os import makedirs
 from .constants import WASABI, ATHENA, BRIDGES
 from glob import glob
 from concurrent.futures import ThreadPoolExecutor
+from sys import stderr
 
 
 class WasabiBucket:
     """Represents the metasub data bucket on Wasabi (an s3 clone)."""
 
-    def __init__(self, profile_name=None, threads=10):
+    def __init__(self, profile_name=None, threads=1):
         self.session = boto3.Session(profile_name=profile_name)
         self.s3 = self.session.resource('s3', endpoint_url=WASABI.ENDPOINT_URL)
         self.bucket = self.s3.Bucket(WASABI.BUCKET_NAME)
@@ -112,7 +113,10 @@ class WasabiBucket:
                 continue
             tkns = result_file.split('/')
             remote_key = f'cap_analysis/{tkns[-2]}/{tkns[-1]}'
-            self.upload(result_file, remote_key, dryrun)
+            try:
+                self.upload(result_file, remote_key, dryrun)
+            except:
+                print(f'ERROR {result_file}', file=stderr)
 
     def upload_contigs(self, result_dir=BRIDGES.ASSEMBLIES, dryrun=True):
         all_uploaded_results = {

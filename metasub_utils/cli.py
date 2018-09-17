@@ -171,6 +171,7 @@ def cli_upload_city(dryrun, upload_only, display_name, city_names):
     elif len(city_names) > 1 and display_name is None:
         print('Display name cannot be blank if multiple cities are listed', file=stderr)
         exit(1)
+    display_name += ' September 2018'
     upload_cities(
         result_dir, city_names, display_name,
         upload_only=upload_only,
