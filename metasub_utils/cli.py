@@ -87,7 +87,7 @@ def cli_list_unassembled_data(profile_name):
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('target_dir', default='data')
 def cli_download_contig_files(dryrun, profile_name, target_dir):
-    """Download contig files from wasabi."""
+    """Download data without contig files from wasabi."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.download_unassembled_data(
         target_dir=target_dir,
