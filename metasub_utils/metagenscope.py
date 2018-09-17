@@ -22,14 +22,10 @@ def get_sample_names(city_names):
     city_names = [city_name.lower() for city_name in city_names]
     metadata = get_complete_metadata()
     sample_names = set()
-    for _, row in metadata.iterrows():
+    for row_id, row in metadata.iterrows():
         if str(row[COLUMNS.CITY]).lower() not in city_names:
             continue
-        for id_name in COLUMNS.IDS:
-            try:
-                sample_names.add(str(row[id_name]).upper())
-            except KeyError:
-                pass
+        sample_names.add(row_id)
     return sample_names
 
 
