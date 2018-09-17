@@ -25,7 +25,7 @@ def get_sample_names(city_names):
     for row_id, row in metadata.iterrows():
         if str(row[COLUMNS.CITY]).lower() not in city_names:
             continue
-        sample_names.add(row_id)
+        sample_names.add(row['hudson_alpha_uid'])
     return sample_names
 
 
