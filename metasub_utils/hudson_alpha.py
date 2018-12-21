@@ -89,14 +89,17 @@ Download data from Hudson Alpha.
 
 
 def download_file(url, path, auth):
-    r = requests.get(url, auth=auth)
-    open(path, 'wb').write(r.content)
+    try:
+        r = requests.get(url, auth=auth)
+        open(path, 'wb').write(r.content)
+    except:
+        print(f'Failed to download {url} to {path}', file=stderr)
 
 
 def process_flowcells(dryrun, ha_auth):
     with open(HALPHA.FLOWCELL_FILENAME) as flowcell_file:
         tkn_gen = (
-            line.strip().split(',')
+            line.strip().split(',')[:4]
             for line in flowcell_file
             if len(line.strip()) > 0
         )

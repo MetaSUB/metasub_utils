@@ -39,6 +39,8 @@ class WasabiBucket:
         return {key.key for key in self.bucket.objects.all()}
 
     def upload(self, local_file, remote_key, dryrun):
+        if not isfile(local_file):
+            return
         print(f'WASABI UPLOADING {local_file} {remote_key}')
         if not dryrun:
             self.add_job(lambda: self.bucket.upload_file(local_file, remote_key))
