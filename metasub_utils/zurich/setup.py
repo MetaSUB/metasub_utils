@@ -1,6 +1,6 @@
 from setuptools import setup
 
-microlib_name = 'metasub_utils.wasabi'
+microlib_name = 'metasub_utils.zurich'
 
 requirements = [
     'pysftp',

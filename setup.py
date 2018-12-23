@@ -17,7 +17,6 @@ PACKAGE_NAME = 'metasub_utils'
 SOURCES = {
   'metasub_utils.athena': 'metasub_utils/athena',
   'metasub_utils.bridges': 'metasub_utils/bridges',
-  'metasub_utils.cli': 'metasub_utils/cli',
   'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
   'metasub_utils.metadata': 'metasub_utils/metadata',
   'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
@@ -33,13 +32,13 @@ def install_microlibs(sources, develop=False):
     working_dir = os.getcwd()
     for name, path in iteritems(sources):
         try:
-            os.chdir(os.path.join(working_dir, path.root_dir))
+            os.chdir(os.path.join(working_dir, path))
             if develop:
                 pip.main(['install', '-e', '.'])
             else:
                 pip.main(['install', '.'])
         except Exception as e:
-            print('Oops, something went wrong installing', name)
+            print('Something went wrong installing', name)
             print(e)
         finally:
             os.chdir(working_dir)
@@ -75,6 +74,11 @@ setup(
         'future',
         'six',
     ],
+    entry_points={
+        'console_scripts': [
+            'metasub=metasub_utils.cli:main'
+        ]
+    },
     cmdclass={
         'install': InstallCmd,
         'develop': DevelopCmd,

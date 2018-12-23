@@ -3,8 +3,8 @@ from setuptools import setup
 microlib_name = 'metasub_utils.athena'
 
 requirements = [
-    'metasub_utils.wasabi',
-    'metasub_utils.zurich',
+    'metasub_utils.athena',
+    'metagenscope',
 ]
 
 setup(

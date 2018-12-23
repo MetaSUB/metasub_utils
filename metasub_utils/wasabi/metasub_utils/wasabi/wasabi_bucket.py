@@ -5,7 +5,7 @@ from glob import glob
 from concurrent.futures import ThreadPoolExecutor
 from sys import stderr
 
-from .constants import WASABI
+from .constants import *
 
 
 class WasabiBucket:

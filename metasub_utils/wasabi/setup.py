@@ -13,6 +13,11 @@ setup(
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
+    entry_points={
+        'console_scripts': [
+            'metasub-wasabi=metasub_utils.wasabi.cli:wasabi'
+        ]
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
