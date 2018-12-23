@@ -1,7 +1,10 @@
 """CLI for commands to be run on athena."""
 
 import click
-from metasub_utils.cli import main
+
+from metasub_utils.wasabi import WasabiBucket
+
+from .constants import *
 
 
 @click.group()
@@ -9,13 +12,10 @@ def athena():
     pass
 
 
-main.add_command(athena)
-
-
 @athena.command('upload-results')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
-@click.argument('result_dir', default=ATHENA.METASUB_RESULTS)
+@click.argument('result_dir', default=METASUB_RESULTS)
 def cli_upload_results(dryrun, profile_name, result_dir):
     """Upload CAP results to wasabi. Only works on Athena."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
@@ -29,7 +29,7 @@ def cli_upload_results(dryrun, profile_name, result_dir):
 @athena.command('upload-data')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
-@click.argument('data_dir', default=ATHENA.HALPHA_LIBRARY)
+@click.argument('data_dir', default=HALPHA_LIBRARY)
 def cli_upload_raw_data(dryrun, profile_name, data_dir):
     """Upload CAP results to wasabi. Only works on Athena."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)

@@ -1,15 +1,15 @@
 """CLI for commands to be run on bridges."""
 
 import click
-from metasub_utils.cli import main
+
+from sys import stderr
+
+from metasub_utils.athena.constants import METASUB_RESULTS
 
 
 @click.group()
 def mgs():
     pass
-
-
-main.add_command(mgs)
 
 
 @mgs.command(name='upload-city')
@@ -20,7 +20,7 @@ main.add_command(mgs)
 @click.argument('city_names', nargs=-1)
 def cli_upload_city(dryrun, upload_only, display_name, display_name_suffix, city_names):
     """Upload a city to MetaGenScope. Only works on Athena."""
-    result_dir = ATHENA.METASUB_RESULTS
+    result_dir = METASUB_RESULTS
     if len(city_names) == 1 and display_name is None:
         display_name = as_display_name(city_names[0])
     elif len(city_names) > 1 and display_name is None:

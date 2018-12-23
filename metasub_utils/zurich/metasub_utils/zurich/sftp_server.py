@@ -1,5 +1,5 @@
 import pysftp
-from .constants import ZURICH
+from .constants import *
 
 
 class SFTPKnex:
@@ -8,7 +8,7 @@ class SFTPKnex:
         self.dryrun = dryrun
         cnopts = pysftp.CnOpts()
         cnopts.hostkeys = None
-        self.knex = pysftp.Connection(ZURICH.URL, username=username, password=password, cnopts=cnopts)
+        self.knex = pysftp.Connection(URL, username=username, password=password, cnopts=cnopts)
 
     def close(self):
         self.knex.close()

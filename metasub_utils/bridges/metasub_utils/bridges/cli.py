@@ -1,17 +1,19 @@
 """CLI for commands to be run on bridges."""
 
 import click
-from metasub_utils.cli import main
 
-from .bridges import upload_metaspades_assemblies_from_bridges
+from metasub_utils.wasabi import WasabiBucket
+
+from .bridges import (
+    upload_metaspades_assemblies_from_bridges,
+    copy_metaspades_assemblies_from_bridges
+)
+from .constants import *
 
 
 @click.group()
 def bridges():
     pass
-
-
-main.add_command(bridges)
 
 
 @bridges.command(name='upload-assemblies-to-zurich')
@@ -26,7 +28,7 @@ def cli_upload_assemblies(dryrun, username, password):
 @bridges.command('upload-contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
-@click.argument('result_dir', default=BRIDGES.ASSEMBLIES)
+@click.argument('result_dir', default=ASSEMBLIES)
 def cli_upload_contigs(dryrun, profile_name, result_dir):
     """Upload CAP results to wasabi. Only works on bridges."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)

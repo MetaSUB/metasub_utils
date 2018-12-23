@@ -17,11 +17,10 @@ def main(args=None):
 sub_clis = [
     ('metasub_utils.athena.cli', 'athena'),
     ('metasub_utils.bridges.cli', 'bridges'),
-    ('metasub_utils.hudson_alpha.cli', 'hudson_alpha'),
+    ('metasub_utils.hudson_alpha.cli', 'hudsonalpha'),
     ('metasub_utils.metadata.cli', 'metadata'),
-    ('metasub_utils.metagenscope.cli', 'metagenscope'),
+    ('metasub_utils.metagenscope.cli', 'mgs'),
     ('metasub_utils.wasabi.cli', 'wasabi'),
-    ('metasub_utils.zurich.cli', 'zurich'),
 ]
 
 

@@ -51,17 +51,48 @@ default_test: &default_test
 
 # CircleCI Jobs
 jobs:
-  # ----- WASABI -----
-  test_wasabi:
+  # ----- ATHENA -----
+  test_athena:
     <<: *default_test
     environment:
-      MODULE_NAME: wasabi
+      MODULE_NAME: athena
+
+  # ----- BRIDGES -----
+  test_bridges:
+    <<: *default_test
+    environment:
+      MODULE_NAME: bridges
+
+  # ----- HUDSON_ALPHA -----
+  test_hudson_alpha:
+    <<: *default_test
+    environment:
+      MODULE_NAME: hudson_alpha
 
   # ----- METADATA -----
   test_metadata:
     <<: *default_test
     environment:
       MODULE_NAME: metadata
+
+  # ----- MGS -----
+  test_metagenscope:
+    <<: *default_test
+    environment:
+      MODULE_NAME: metagenscope
+
+  # ----- WASABI -----
+  test_wasabi:
+    <<: *default_test
+    environment:
+      MODULE_NAME: wasabi
+
+  # ----- ZURICH -----
+  test_zurich:
+    <<: *default_test
+    environment:
+      MODULE_NAME: zurich
+
 
 test_tpl: &test_tpl
   filters:
@@ -75,7 +106,18 @@ workflows:
   # Run parallel pipelines for each module, skipping if there are no changes
   base_cd:
     jobs:
-      - test_wasabi:
+      - test_athena:
+          <<: *test_tpl
+      - test_bridges:
+          <<: *test_tpl
+      - test_hudson_alpha:
           <<: *test_tpl
       - test_metadata:
           <<: *test_tpl
+      - test_metagenscope:
+          <<: *test_tpl
+      - test_wasabi:
+          <<: *test_tpl
+      - test_zurich:
+          <<: *test_tpl
+

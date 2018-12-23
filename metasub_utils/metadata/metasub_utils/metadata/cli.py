@@ -1,15 +1,16 @@
 """CLI for commands metadata commands."""
 
 import click
-from metasub_utils.cli import main
+
+from .metadata import (
+    get_canonical_city_names,
+    get_complete_metadata,
+)
 
 
 @click.group()
 def metadata():
     pass
-
-
-main.add_command(metadata)
 
 
 @metadata.command('cities')

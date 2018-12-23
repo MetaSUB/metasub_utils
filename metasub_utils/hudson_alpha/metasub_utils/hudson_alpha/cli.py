@@ -1,15 +1,13 @@
 """CLI for hudson alpha related commands."""
 
 import click
-from metasub_utils.cli import main
+
+from .hudson_alpha import process_flowcells
 
 
 @click.group()
 def hudsonalpha():
     pass
-
-
-main.add_command(hudsonalpha)
 
 
 @hudsonalpha.command(name='download')
