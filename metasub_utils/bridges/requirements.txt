@@ -1,8 +1,0 @@
---index-url https://pypi.python.org/simple
-
-factory-boy==2.11.1
-
-../base/
-../microbe_census_data/
-
--e .

@@ -1,11 +1,11 @@
 import boto3
-import botocore
 from os.path import join, dirname, basename, isfile
 from os import makedirs
-from .constants import WASABI, ATHENA, BRIDGES
 from glob import glob
 from concurrent.futures import ThreadPoolExecutor
 from sys import stderr
+
+from .constants import WASABI
 
 
 class WasabiBucket:
@@ -13,8 +13,8 @@ class WasabiBucket:
 
     def __init__(self, profile_name=None, threads=1):
         self.session = boto3.Session(profile_name=profile_name)
-        self.s3 = self.session.resource('s3', endpoint_url=WASABI.ENDPOINT_URL)
-        self.bucket = self.s3.Bucket(WASABI.BUCKET_NAME)
+        self.s3 = self.session.resource('s3', endpoint_url=ENDPOINT_URL)
+        self.bucket = self.s3.Bucket(BUCKET_NAME)
         self.executor = ThreadPoolExecutor(max_workers=threads)
         self.futures = [None] * 2 * threads
         self.ind = 0
@@ -91,7 +91,7 @@ class WasabiBucket:
                 continue
             self.download(key, local_path, dryrun)
 
-    def upload_raw_data(self, data_dir=ATHENA.HALPHA_LIBRARY, dryrun=True):
+    def upload_raw_data(self, data_dir, dryrun=True):
         all_uploaded_results = {
             basename(key)
             for key in self.list_files()
@@ -104,7 +104,7 @@ class WasabiBucket:
             remote_key = f'data/{data_dir}/{tkns[-3]}/{tkns[-2]}/{tkns[-1]}'
             self.upload(result_file, remote_key, dryrun)
 
-    def upload_results(self, result_dir=ATHENA.METASUB_RESULTS, dryrun=True):
+    def upload_results(self, result_dir, dryrun=True):
         all_uploaded_results = {
             basename(key)
             for key in self.list_files()
@@ -120,7 +120,7 @@ class WasabiBucket:
             except:
                 print(f'ERROR {result_file}', file=stderr)
 
-    def upload_contigs(self, result_dir=BRIDGES.ASSEMBLIES, dryrun=True):
+    def upload_contigs(self, result_dir, dryrun=True):
         all_uploaded_results = {
             basename(dirname(key))
             for key in self.list_files()

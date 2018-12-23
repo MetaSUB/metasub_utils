@@ -1,15 +1,13 @@
 """CLI for commands to be related to wasabi."""
 
 import click
-from metasub_utils.cli import main
+
+from .wasabi_bucket import WasabiBucket
 
 
 @click.group()
 def wasabi():
     pass
-
-
-main.add_command(wasabi)
 
 
 @wasabi.command('list')
@@ -24,7 +22,7 @@ def cli_list_wasabi_files(profile_name):
 @wasabi.command('list-unassembled')
 @click.argument('profile_name', default='wasabi')
 def cli_list_unassembled_data(profile_name):
-    """List all files in the wasabi bucket."""
+    """List unassembled data in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     for file_key in wasabi_bucket.list_unassembled_data():
         print(file_key)

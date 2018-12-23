@@ -11,5 +11,12 @@ def main(args=None):
     pass
 
 
+try:
+    from metasub_utils.wasabi.cli import wasabi
+    main.add_command(wasabi)
+except ImportError:
+    pass
+
+
 if __name__ == "__main__":
     main()

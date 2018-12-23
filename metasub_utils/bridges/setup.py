@@ -1,25 +1,25 @@
 from setuptools import setup
 
-microlib_name = 'pangea_modules.ags'
+microlib_name = 'metasub_utils.bridges'
 
 requirements = [
-    'pangea_modules.base',
-    'pangea_modules.microbe_census_data',
-    'mongoengine',
+    'metasub_utils.zurich',
+    'metasub_utils.wasabi',
 ]
 
 setup(
     name=microlib_name,
-    version='0.1.2',
-    author='Longtail Biotech',
-    author_email='dev@longtailbio.com',
-    description=('Average Genome Size display the distribution of average '
-                 'genome sizes for different metadata attributes.'),
-    license='Restricted',
+    version='0.2.0',
+    author='David Danko',
+    author_email='dcdanko@gmail.com',
+    license='MIT license',
     classifiers=[
-        'Private :: Do Not Upload to pypi server',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.6',
     ],
-    namespace_packages=['pangea_modules'],
+    namespace_packages=['metasub_utils'],
     packages=[microlib_name],
     install_requires=requirements,
 )
+
