@@ -82,7 +82,7 @@ jobs:
       MODULE_NAME: wasabi
 
   # ----- METADATA -----
-  test_wasabi:
+  test_metadata:
     <<: *default_test
     environment:
       MODULE_NAME: metadata
@@ -101,8 +101,5 @@ workflows:
     jobs:
       - test_wasabi:
           <<: *test_tpl
-
-  base_cd:
-    jobs:
       - test_metadata:
           <<: *test_tpl
