@@ -1,35 +1,20 @@
-from glob import glob
-from .constants import BRIDGES, ZURICH
-from os.path import join, dirname, isfile, basename
+"""Handle tasks on bridges."""
+
+from os.path import join, isfile, basename
 from os import makedirs
 from shutil import copyfile
-from .utils import parse_sl_table
-from .sftp_server import SFTPKnex
 from sys import stderr
 
+from metasub_utils.zurich import SFTPKnex
+from metasub_utils.zurich.constants import ASSEMBLIES as ZURICH_ASSEMBLIES
 
-def hauid_from_metaspades_dir(contig_path, sl_tbl):
-    tkns = contig_path.split('haib')[1].split('/')
-    haib = 'haib' + tkns[0]
-    flowcell = tkns[1]
-    raw_id = tkns[2].split('_1.fastq.gz.metaspades')[0].split('.R1.fastq.gz.metaspades')[0]
-    sl_id = sl_tbl[raw_id].split('_')[2]
-    return haib, flowcell, sl_id
+from .utils import *
 
 
-def get_bridges_metaspades_dirs():
-    contig_files = glob(BRIDGES.METASUB_DATA + '/**/contigs.fasta', recursive=True)
-    metaspades_dirs = {
-        dirname(contig_file)
-        for contig_file in contig_files
-    }
-    return metaspades_dirs
-
-
-def upload_one_metaspades_dir(server, mspades_dir, sl_tbl):
+def upload_one_metaspades_dir_to_zurich(server, mspades_dir, sl_tbl):
     hauid_tuple = hauid_from_metaspades_dir(mspades_dir, sl_tbl)
     hauid_sname = '_'.join(hauid_tuple)
-    remote_dir = f'{ZURICH.ASSEMBLIES}/{hauid_tuple[0]}/{hauid_tuple[1]}/{hauid_sname}.metaspades/'
+    remote_dir = f'{ZURICH_ASSEMBLIES}/{hauid_tuple[0]}/{hauid_tuple[1]}/{hauid_sname}.metaspades/'
     server.make_dirs(remote_dir)
     for subfile in glob(mspades_dir + '/*'):
         if not isfile(subfile):
