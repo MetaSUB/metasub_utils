@@ -1,28 +1,6 @@
 version: 2
 
-# Common step for exiting a job if there are no changes for the specified module
-abort_if_no_change: &abort_if_no_change
-  name: Abort if no changes
-  command: |
-    # Build every module for tagged releases
-    if [ -n "$CIRCLE_TAG" ] ; then exit 0; fi
-    if [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ] ; then
-      WORD_COUNT=$(git diff --name-only HEAD@{1} modules/$MODULE_NAME | wc -l)
-    elif [[ $CIRCLE_BRANCH ==  feature/* ]] ; then
-      git fetch --force origin "develop:remotes/origin/develop"
-      WORD_COUNT=$(git diff --name-only remotes/origin/develop modules/$MODULE_NAME | wc -l)
-    elif [[ $CIRCLE_BRANCH ==  hotfix/* ]] || [[ $CIRCLE_BRANCH ==  release/* ]] ; then
-      git fetch --force origin "master:remotes/origin/master"
-      WORD_COUNT=$(git diff --name-only remotes/origin/master modules/$MODULE_NAME | wc -l)
-    else
-      echo "Invalid branch name pattern!"
-      exit 1
-    fi
-    if [ $WORD_COUNT -eq 0 ] ; then
-      echo "No differences for this module. Skipping."
-      circleci step halt
-    fi
-# Common step for adding Longtail PyPI index
+
 default_test: &default_test
   docker:
     - image: circleci/python:3.6
@@ -33,8 +11,6 @@ default_test: &default_test
 
   steps:
     - checkout
-
-    - run: *abort_if_no_change
 
     - restore_cache:
         keys:
