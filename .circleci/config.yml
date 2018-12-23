@@ -1,0 +1,98 @@
+version: 1
+
+# Common step for exiting a job if there are no changes for the specified module
+abort_if_no_change: &abort_if_no_change
+  name: Abort if no changes
+  command: |
+    # Build every module for tagged releases
+    if [ -n "$CIRCLE_TAG" ] ; then exit 0; fi
+    if [ $CIRCLE_BRANCH = "master" ] || [ $CIRCLE_BRANCH = "develop" ] ; then
+      WORD_COUNT=$(git diff --name-only HEAD@{1} modules/$MODULE_NAME | wc -l)
+    elif [[ $CIRCLE_BRANCH ==  feature/* ]] ; then
+      git fetch --force origin "develop:remotes/origin/develop"
+      WORD_COUNT=$(git diff --name-only remotes/origin/develop modules/$MODULE_NAME | wc -l)
+    elif [[ $CIRCLE_BRANCH ==  hotfix/* ]] || [[ $CIRCLE_BRANCH ==  release/* ]] ; then
+      git fetch --force origin "master:remotes/origin/master"
+      WORD_COUNT=$(git diff --name-only remotes/origin/master modules/$MODULE_NAME | wc -l)
+    else
+      echo "Invalid branch name pattern!"
+      exit 1
+    fi
+    if [ $WORD_COUNT -eq 0 ] ; then
+      echo "No differences for this module. Skipping."
+      circleci step halt
+    fi
+# Common step for adding Longtail PyPI index
+default_test: &default_test
+  docker:
+    - image: circleci/python:3.6
+
+  # CircleCI does not allow expansion of the path so we'll have to `cd`
+  # into the correct submodule directory for each `run` step
+  working_directory: ~/project
+
+  steps:
+    - checkout
+
+    - run: *abort_if_no_change
+
+    - restore_cache:
+        keys:
+          # CIRCLE_JOB is the best approximation of MODULE_NAME env var
+          - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
+          - v1-dependencies-
+
+    - run:
+        name: Install Python Dependencies
+        command: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install -r requirements.txt
+          cd modules/$MODULE_NAME
+          pip install -r requirements.txt
+    - save_cache:
+        paths:
+          - ./venv
+        # We cannot use the {{ checksum }} helper for each submodule.
+        # Instead caches are saved with {{ epoch }} to ensure they are
+        # updated for each save.
+        key: v1-dependencies-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+
+    - run:
+        name: Run tests
+        command: |
+          set +e
+          . venv/bin/activate
+          python -m pytest --color=yes modules/$MODULE_NAME -s
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 5 ] ; then
+            # https://docs.pytest.org/en/latest/usage.html#possible-exit-codes
+            echo "Squashing pytest's non-zero exit code for 'no tests run'."
+            exit 0
+          else
+            exit $EXIT_CODE
+          fi
+
+# CircleCI Jobs
+jobs:
+  # ----- WASABI -----
+  test_wasabi:
+    <<: *default_test
+    environment:
+      MODULE_NAME: wasabi
+
+
+test_tpl: &test_tpl
+  filters:
+    tags:
+      only: /^v.*/
+
+
+workflows:
+  version: 1
+
+  # Run parallel pipelines for each module, skipping if there are no changes
+  base_cd:
+    jobs:
+      - test_wasabi:
+          <<: *test_tpl
