@@ -24,7 +24,7 @@ default_test: &default_test
           python3 -m venv venv
           . venv/bin/activate
           pip install -r requirements.txt
-          cd modules/$MODULE_NAME
+          cd $MODULE_NAME
           pip install -r requirements.txt
     - save_cache:
         paths:
@@ -39,7 +39,7 @@ default_test: &default_test
         command: |
           set +e
           . venv/bin/activate
-          python -m pytest --color=yes modules/$MODULE_NAME -s
+          python -m pytest --color=yes $MODULE_NAME -s
           EXIT_CODE=$?
           if [ $EXIT_CODE -eq 5 ] ; then
             # https://docs.pytest.org/en/latest/usage.html#possible-exit-codes
