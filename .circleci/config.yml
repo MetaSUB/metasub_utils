@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 # Common step for exiting a job if there are no changes for the specified module
 abort_if_no_change: &abort_if_no_change
@@ -94,7 +94,7 @@ test_tpl: &test_tpl
 
 
 workflows:
-  version: 1
+  version: 2
 
   # Run parallel pipelines for each module, skipping if there are no changes
   base_cd:
