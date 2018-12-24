@@ -22,4 +22,3 @@ setup(
     packages=[microlib_name],
     install_requires=requirements,
 )
-

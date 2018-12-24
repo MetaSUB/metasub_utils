@@ -40,7 +40,7 @@ def parse_ha_filename_file(ha_filename_path):
         hfp.readline()
         for line in hfp:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 continue
             tkns = line.split('\t')
             try:
