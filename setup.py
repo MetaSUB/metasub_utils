@@ -15,13 +15,13 @@ PACKAGE_NAME = 'metasub_utils'
 
 
 SOURCES = {
-  'metasub_utils.athena': 'metasub_utils/athena',
-  'metasub_utils.bridges': 'metasub_utils/bridges',
-  'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
-  'metasub_utils.metadata': 'metasub_utils/metadata',
-  'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
-  'metasub_utils.wasabi': 'metasub_utils/wasabi',
-  'metasub_utils.zurich': 'metasub_utils/zurich',
+    'metasub_utils.athena': 'metasub_utils/athena',
+    'metasub_utils.bridges': 'metasub_utils/bridges',
+    'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
+    'metasub_utils.metadata': 'metasub_utils/metadata',
+    'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
+    'metasub_utils.wasabi': 'metasub_utils/wasabi',
+    'metasub_utils.zurich': 'metasub_utils/zurich',
 }
 
 
@@ -83,4 +83,6 @@ setup(
         'install': InstallCmd,
         'develop': DevelopCmd,
     },
+    packages=[PACKAGE_NAME],
+    package_dir={PACKAGE_NAME: 'metasub_utils'},
 )
