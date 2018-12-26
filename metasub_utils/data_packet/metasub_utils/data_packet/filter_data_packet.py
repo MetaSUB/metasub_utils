@@ -21,6 +21,7 @@ def get_samples_in_city(city_name):
 
 
 def make_city_packet(city_name, data_packet_dir='.'):
+    """Make a data packet for a given city."""
     city_name = city_name.lower()
     city_packet_dir = join(data_packet_dir, f'city_packets/{city_name}')
     makedirs(city_packet_dir, exist_ok=True)
@@ -31,11 +32,16 @@ def make_city_packet(city_name, data_packet_dir='.'):
         for sample_name in sample_names:
             print(sample_name, file=snf)
 
+    make_sub_packet(city_packet_dir, sample_names_filename, data_packet_dir=data_packet_dir)
+
+
+def make_sub_packet(sub_packet_dir, sample_names_filename, data_packet_dir='.'):
+    """Make a sub packet given a directory and a list of sample names."""
     for packet_sub_dir in ['antimicrobial_resistance', 'metadata', 'other', 'taxonomy']:
-        city_packet_sub_dir = join(city_packet_dir, packet_sub_dir)
-        makedirs(city_packet_sub_dir, exist_ok=True)
+        sub_packet_sub_dir = join(sub_packet_dir, packet_sub_dir)
+        makedirs(sub_packet_sub_dir, exist_ok=True)
         packet_sub_dir = join(data_packet_dir, packet_sub_dir)
         tables = glob(packet_sub_dir + '/*.csv')
         for table in tables:
-            city_table_filename = join(city_packet_sub_dir, basename(table))
-            filter_file(table, sample_names_filename, city_table_filename)
+            sub_table_filename = join(city_packet_sub_dir, basename(table))
+            filter_file(table, sample_names_filename, sub_table_filename)
