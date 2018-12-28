@@ -15,5 +15,6 @@ class TestWasabi(TestCase):
         bucket = WasabiBucket()
         local_name = f'{getcwd()}/temp_{randint(0, 1000 * 1000)}'
         bucket.download('metasub/Scripts/downloadem.sh', local_name, False)
+        bucket.close()
         self.assertTrue(isfile(local_name))
         self.assertTrue(len(open(local_name).read()) > 0)
