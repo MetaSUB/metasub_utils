@@ -6,9 +6,8 @@ MetaSUB Utilities
 .. image:: https://img.shields.io/pypi/v/metasub_utils.svg
         :target: https://pypi.python.org/pypi/metasub_utils
 
-.. image:: https://pyup.io/repos/github/dcdanko/metasub_utils/shield.svg
-     :target: https://pyup.io/repos/github/dcdanko/metasub_utils/
-     :alt: Updates
+.. image:: https://circleci.com/gh/MetaSUB/metasub_utils.svg?style=svg
+        :target: https://circleci.com/gh/MetaSUB/metasub_utils
 
 
 Utilities for the MetaSUB Consortium
@@ -22,11 +21,34 @@ Features
 
 A collection of utilites to manage the MetaSUB project.
 
-Most of the tools in this package involve uploading or downloading data.
+- Athena is a collaction of tools to maange data on the Weill-Cornell ICB Compute Cluster
+- Bridges is a collection of tools to manage data on the XSEDE Bridges Compute Cluster
+- Data Pacaket contains scripts for building metasub data packets
+- Hudson Alpha contains tools for downloading raw sequecne data from Hudson Alpha
+- Metadata provides access to the MetaSUB Metadata
+- Metagenscope is a set of utilites to upload data to metagenscope
+- Wasabi uploads and downloads data from Wasabi Hot Storage, an s3 clone
+- Zurich uplaods and downloads data from the Zurich Eth MetaSUB SFTP server 
+
+
+Installation
+------------
+
+You need to be using py3 to install this package.
+
+Install from PyPi
 
 .. code-block:: bash
 
     pip install metasub_utils
+
+
+Install from source.
+
+.. code-block:: bash
+    git clone git@github.com:MetaSUB/metasub_utils.git
+    cd metasub_utils
+    python setup.py install
 
 
 Downloading Data From Wasabi
@@ -60,6 +82,8 @@ Note that all download commands dryrun by default. You will need to add the `--w
 
 Credits
 ---------
+
+This package is structured as a set of .. _microlibraries: https://blog.shazam.com/python-microlibs-5be9461ad979
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 

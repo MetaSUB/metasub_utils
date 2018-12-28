@@ -60,7 +60,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.2.0',
+    version='0.3.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utility functions for the MetaSUB Consortium',
