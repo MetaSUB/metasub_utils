@@ -22,7 +22,7 @@ A collection of utilites to manage the MetaSUB project.
 - Bridges is a collection of tools to manage data on the XSEDE Bridges Compute Cluster
 - Data Packet contains scripts for building MetaSUB data packets
 - Hudson Alpha contains tools for downloading raw sequence data from Hudson Alpha
-- Metadata provides access to the MetaSUB Metadata
+- Metadata provides access to the MetaSUB Metadata_
 - Metagenscope is a set of utilites to upload data to metagenscope_
 - Wasabi uploads and downloads data from Wasabi Hot Storage, an S3 clone
 - Zurich uploads and downloads data from the Zurich MetaSUB SFTP server 
@@ -84,6 +84,7 @@ This package is structured as a set of microlibraries_
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
+.. _metadata: https://github.com/MetaSUB/MetaSUB-metadata
 .. _metagenscope: https://www.metagenscope.com/
 .. _microlibraries: https://blog.shazam.com/python-microlibs-5be9461ad979
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
