@@ -1,7 +1,7 @@
 """Test suite for wasabi."""
 
 from unittest import TestCase
-from os import getcwd, makdirs, environ
+from os import getcwd, makedirs, environ
 from os.path import isfile, dirname
 from random import randint
 
@@ -13,7 +13,7 @@ def with_aws_credentials(func):
     cred_filename = environ['HOME'] + '/.aws/credentials'
     if isfile(cred_filename):
         return
-    makedirs(dirname(cred_filename), exists_ok=True)
+    makedirs(dirname(cred_filename), exist_ok=True)
 
     access_key, secret_key = environ['AWS_ACCESS_KEY'], environ['AWS_SECRET_ACCESS_KEY']
     cred_str = f'[default]\naws_access_key_id={access_key}\naws_secret_access_key={secret_key}\n'
