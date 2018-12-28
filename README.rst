@@ -9,6 +9,8 @@ MetaSUB Utilities
 .. image:: https://circleci.com/gh/MetaSUB/metasub_utils.svg?style=svg
         :target: https://circleci.com/gh/MetaSUB/metasub_utils
 
+.. image:: https://www.codefactor.io/Content/badges/A.svg
+        :target: https://www.codefactor.io/repository/github/metasub/metasub_utils
 
 Utilities for the MetaSUB Consortium. Free software: MIT license.
 
