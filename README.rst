@@ -43,6 +43,7 @@ Install from PyPi
 Install from source.
 
 .. code-block:: bash
+
     git clone git@github.com:MetaSUB/metasub_utils.git
     cd metasub_utils
     python setup.py install
