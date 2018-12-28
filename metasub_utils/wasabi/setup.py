@@ -5,6 +5,7 @@ microlib_name = 'metasub_utils.wasabi'
 requirements = [
     'boto3',
     'awscli',
+    'click',
 ]
 
 setup(

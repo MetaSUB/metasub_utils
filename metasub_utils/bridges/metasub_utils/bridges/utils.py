@@ -29,7 +29,7 @@ def parse_sl_table():
     with open(SL_TABLE) as sl_file:
         for line in sl_file:
             line = line.strip()
-            if len(line) == 0:
+            if not line:
                 continue
             tkns = line.split()
             tbl[tkns[0]] = tkns[1]

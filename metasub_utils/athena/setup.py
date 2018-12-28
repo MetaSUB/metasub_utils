@@ -3,6 +3,7 @@ from setuptools import setup
 microlib_name = 'metasub_utils.athena'
 
 requirements = [
+    'click',
     'metasub_utils.athena',
     'metagenscope',
 ]
