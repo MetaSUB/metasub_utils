@@ -20,7 +20,7 @@ A collection of utilites to manage the MetaSUB project.
 
 - Athena is a collaction of tools to maange data on the Weill-Cornell ICB Compute Cluster
 - Bridges is a collection of tools to manage data on the XSEDE Bridges Compute Cluster
-- Data Pacaket contains scripts for building metasub data packets
+- Data Packet contains scripts for building metasub data packets
 - Hudson Alpha contains tools for downloading raw sequecne data from Hudson Alpha
 - Metadata provides access to the MetaSUB Metadata
 - Metagenscope is a set of utilites to upload data to metagenscope
