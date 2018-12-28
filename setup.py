@@ -1,56 +1,88 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""Macro module for MetaSUB Utilites.
+Based on: https://blog.shazam.com/python-microlibs-5be9461ad979
+"""
 
-"""The setup script."""
 
-from setuptools import setup, find_packages
+import os
+import pip
+from six import iteritems
+from setuptools import setup
+from setuptools.command.develop import develop
+from setuptools.command.install import install
 
-with open('README.rst') as readme_file:
-    readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
+PACKAGE_NAME = 'metasub_utils'
 
-requirements = [
-    'Click>=6.0',
-    # TODO: put package requirements here
-]
 
-setup_requirements = [
-    # TODO(dcdanko): put setup requirements (distutils extensions, etc.) here
-]
+SOURCES = {
+    'metasub_utils.athena': 'metasub_utils/athena',
+    'metasub_utils.bridges': 'metasub_utils/bridges',
+    'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
+    'metasub_utils.metadata': 'metasub_utils/metadata',
+    'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
+    'metasub_utils.wasabi': 'metasub_utils/wasabi',
+    'metasub_utils.zurich': 'metasub_utils/zurich',
+}
 
-test_requirements = [
-    # TODO: put package test requirements here
-]
+
+def install_microlibs(sources, develop=False):
+    """ Use pip to install all microlibraries.  """
+    print('Installing all microlibs in {} mode'.format(
+              'development' if develop else 'normal'))
+    working_dir = os.getcwd()
+    for name, path in iteritems(sources):
+        try:
+            os.chdir(os.path.join(working_dir, path))
+            if develop:
+                pip.main(['install', '-e', '.'])
+            else:
+                pip.main(['install', '.'])
+        except Exception as e:
+            print('Something went wrong installing', name)
+            print(e)
+        finally:
+            os.chdir(working_dir)
+
+
+class DevelopCmd(develop):
+    """ Add custom steps for the develop command """
+    def run(self):
+        install_microlibs(SOURCES, develop=True)
+        develop.run(self)
+
+
+class InstallCmd(install):
+    """ Add custom steps for the install command """
+    def run(self):
+        install_microlibs(SOURCES, develop=False)
+        install.run(self)
+
 
 setup(
-    name='metasub_utils',
-    version='0.2.0',
-    description="Utilities for the MetaSUB Consortium",
-    long_description=readme + '\n\n' + history,
-    author="David C. Danko",
+    name=PACKAGE_NAME,
+    version='0.3.0',
+    author='David Danko',
     author_email='dcdanko@gmail.com',
-    url='https://github.com/dcdanko/metasub_utils',
-    packages=find_packages(include=['metasub_utils']),
+    description='Utility functions for the MetaSUB Consortium',
+    license='MIT License',
+    classifiers=[
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.6',
+    ],
+    install_requires=[
+        'future',
+        'six',
+    ],
     entry_points={
         'console_scripts': [
             'metasub=metasub_utils.cli:main'
         ]
     },
-    include_package_data=True,
-    install_requires=requirements,
-    license="MIT license",
-    zip_safe=False,
-    keywords='metasub_utils',
-    classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3.6',
-    ],
-    test_suite='tests',
-    tests_require=test_requirements,
-    setup_requires=setup_requirements,
+    cmdclass={
+        'install': InstallCmd,
+        'develop': DevelopCmd,
+    },
+    packages=[PACKAGE_NAME],
+    package_dir={PACKAGE_NAME: 'metasub_utils'},
 )
