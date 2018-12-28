@@ -18,14 +18,14 @@ Features
 
 A collection of utilites to manage the MetaSUB project.
 
-- Athena is a collaction of tools to maange data on the Weill-Cornell ICB Compute Cluster
+- Athena is a collection of tools to manage data on the Weill-Cornell ICB Compute Cluster
 - Bridges is a collection of tools to manage data on the XSEDE Bridges Compute Cluster
-- Data Packet contains scripts for building metasub data packets
-- Hudson Alpha contains tools for downloading raw sequecne data from Hudson Alpha
+- Data Packet contains scripts for building MetaSUB data packets
+- Hudson Alpha contains tools for downloading raw sequence data from Hudson Alpha
 - Metadata provides access to the MetaSUB Metadata
-- Metagenscope is a set of utilites to upload data to metagenscope
-- Wasabi uploads and downloads data from Wasabi Hot Storage, an s3 clone
-- Zurich uploads and downloads data from the Zurich Eth MetaSUB SFTP server 
+- Metagenscope is a set of utilites to upload data to metagenscope_
+- Wasabi uploads and downloads data from Wasabi Hot Storage, an S3 clone
+- Zurich uploads and downloads data from the Zurich MetaSUB SFTP server 
 
 
 Installation
@@ -84,6 +84,7 @@ This package is structured as a set of microlibraries_
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
+.. _metagenscope: https://www.metagenscope.com/
 .. _microlibraries: https://blog.shazam.com/python-microlibs-5be9461ad979
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
