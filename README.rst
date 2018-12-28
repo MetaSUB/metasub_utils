@@ -10,10 +10,7 @@ MetaSUB Utilities
         :target: https://circleci.com/gh/MetaSUB/metasub_utils
 
 
-Utilities for the MetaSUB Consortium
-
-
-* Free software: MIT license
+Utilities for the MetaSUB Consortium. Free software: MIT license.
 
 
 Features
@@ -83,10 +80,11 @@ Note that all download commands dryrun by default. You will need to add the `--w
 Credits
 ---------
 
-This package is structured as a set of .. _microlibraries: https://blog.shazam.com/python-microlibs-5be9461ad979
+This package is structured as a set of microlibraries_
 
 This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
 
+.. _microlibraries: https://blog.shazam.com/python-microlibs-5be9461ad979
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 .. _AWS-CLI: https://docs.aws.amazon.com/cli/latest/userguide/installing.html
