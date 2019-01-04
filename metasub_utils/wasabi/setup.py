@@ -3,6 +3,7 @@ from setuptools import setup
 microlib_name = 'metasub_utils.wasabi'
 
 requirements = [
+    'metasub_utils.metadata',
     'boto3',
     'awscli',
     'click',
@@ -10,7 +11,7 @@ requirements = [
 
 setup(
     name=microlib_name,
-    version='0.2.0',
+    version='0.4.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',

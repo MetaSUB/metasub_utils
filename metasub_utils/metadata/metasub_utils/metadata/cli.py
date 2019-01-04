@@ -5,6 +5,7 @@ import click
 from .metadata import (
     get_canonical_city_names,
     get_complete_metadata,
+    get_samples_from_city,
 )
 
 
@@ -26,3 +27,12 @@ def cli_get_metadata(uploadable):
     """Print a CSV with MetaSUB metadata."""
     tbl = get_complete_metadata(uploadable=uploadable)
     print(tbl.to_csv())
+
+
+@metadata.command('samples-from-city')
+@click.argument('city_name')
+def cli_get_samples_from_city(city_name):
+    """Print the names of samples from the specified city."""
+    sample_names = get_samples_from_city(city_name)
+    for sample_name in sample_names:
+        click.echo(sample_name)
