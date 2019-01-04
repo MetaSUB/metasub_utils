@@ -12,20 +12,20 @@ default_test: &default_test
   steps:
     - checkout
 
-    # - restore_cache:
-    #     keys:
-    #       # CIRCLE_JOB is the best approximation of MODULE_NAME env var
-    #       - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
-    #       - v1-dependencies-
+    - restore_cache:
+        keys:
+          # CIRCLE_JOB is the best approximation of MODULE_NAME env var
+          - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
+          - v1-dependencies-
 
     - run:
         name: Install Python Dependencies
         command: |
           python3 -m venv venv
           . venv/bin/activate
-          pip install -Ir requirements.txt
+          pip install -r requirements.txt
           cd metasub_utils/$MODULE_NAME
-          pip install -Ir requirements.txt
+          pip install -r requirements.txt
     - save_cache:
         paths:
           - ./venv
