@@ -3,10 +3,10 @@ from setuptools import setup
 microlib_name = 'metasub_utils.wasabi'
 
 requirements = [
+    'metasub_utils.metadata',
     'boto3',
     'awscli',
     'click',
-    'metasub_utils.metadata',
 ]
 
 setup(

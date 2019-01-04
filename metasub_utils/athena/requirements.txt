@@ -1,5 +1,8 @@
 
 --index-url https://pypi.python.org/simple
+
+../metadata/
 ../wasabi/
 ../zurich/
+
 -e .
