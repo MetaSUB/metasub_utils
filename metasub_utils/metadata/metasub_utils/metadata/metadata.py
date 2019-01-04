@@ -19,3 +19,14 @@ def get_canonical_city_names(lower=False):
     if lower:
         city_names = {city_name.lower() for city_name in city_names}
     return city_names
+
+
+def get_samples_from_city(city_name):
+    """Return a list of sample names from a particular city.
+
+    If city_name is False return an empty list.
+    """
+    if not city_name:
+        return []
+    metadata = get_complete_metadata()
+    return list(metadata[metadata['city'] == city_name].index)
