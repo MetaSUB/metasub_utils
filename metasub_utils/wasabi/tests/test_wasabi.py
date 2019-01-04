@@ -34,3 +34,10 @@ class TestWasabi(TestCase):
         bucket.close()
         self.assertTrue(isfile(local_name))
         self.assertTrue(len(open(local_name).read()) > 0)
+
+    @with_aws_credentials
+    def test_list_raw(self):
+        bucket = WasabiBucket()
+        raw_reads = bucket.list_raw(city_name='paris')
+        bucket.close()
+        self.assertTrue(raw_reads)

@@ -1,2 +1,5 @@
 --index-url https://pypi.python.org/simple
+
+../metadata/
+
 -e .
