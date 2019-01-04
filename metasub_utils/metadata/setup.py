@@ -4,6 +4,7 @@ microlib_name = 'metasub_utils.metadata'
 
 requirements = [
     'pandas',
+    'click',
 ]
 
 setup(
