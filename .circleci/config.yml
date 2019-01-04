@@ -23,9 +23,9 @@ default_test: &default_test
         command: |
           python3 -m venv venv
           . venv/bin/activate
-          pip install -r requirements.txt
+          pip install -Ir requirements.txt
           cd metasub_utils/$MODULE_NAME
-          pip install -r requirements.txt
+          pip install -Ir requirements.txt
     - save_cache:
         paths:
           - ./venv
