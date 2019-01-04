@@ -12,11 +12,11 @@ default_test: &default_test
   steps:
     - checkout
 
-    - restore_cache:
-        keys:
-          # CIRCLE_JOB is the best approximation of MODULE_NAME env var
-          - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
-          - v1-dependencies-
+    # - restore_cache:
+    #     keys:
+    #       # CIRCLE_JOB is the best approximation of MODULE_NAME env var
+    #       - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
+    #       - v1-dependencies-
 
     - run:
         name: Install Python Dependencies
