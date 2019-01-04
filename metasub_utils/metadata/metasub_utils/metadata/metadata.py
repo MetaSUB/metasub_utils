@@ -28,5 +28,6 @@ def get_samples_from_city(city_name):
     """
     if not city_name:
         return []
+    city_name = city_name.lower()
     metadata = get_complete_metadata()
     return list(metadata[metadata['city'] == city_name].index)

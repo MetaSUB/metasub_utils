@@ -5,7 +5,7 @@ from glob import glob
 from concurrent.futures import ThreadPoolExecutor
 from sys import stderr
 
-from gimmebio.metadata import get_samples_from_city
+from metasub_utils.metadata import get_samples_from_city
 
 from .constants import *
 
@@ -72,7 +72,7 @@ class WasabiBucket:
         samples = set(get_samples_from_city(city_name))
         raw_reads = {
             key.key
-            for key in bucket.objects.filter(prefix='data')
+            for key in self.bucket.objects.filter(Prefix='data')
             if key.key[:-9] == '.fastq.gz'
         }
         raw_read_files = []
