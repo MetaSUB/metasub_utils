@@ -88,6 +88,7 @@ Changelog
 ---------
 
 v0.4.0
+
 - Added a metadata CLI/API to list samples from a particular city
 - Added a wasabi CLI/API to list raw reads with a city-specific option
 - Added a wasabi CLI/API to download raw reads with a city-specific option
