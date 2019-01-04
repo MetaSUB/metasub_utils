@@ -70,11 +70,24 @@ Once your account is configured you can use this utility package to download fil
 .. code-block:: bash
 
     $ metasub wasabi download-contigs --help
-    $ metasub wasabi download-unassembled-data --help
+    $ metasub wasabi download-raw-reads --help
     
 Note that all download commands dryrun by default. You will need to add the `--wetrun` flag to actually download data.
 
-    
+To download data from a specific city run
+
+.. code-block:: bash
+
+    $ metasub wasabi download-raw-reads --wetrun --city-name <city_name>
+
+
+Changelog
+---------
+
+v0.4.0
+- Added a metadata CLI/API to list samples from a particular city
+- Added a wasabi CLI/API to list raw reads with a city-specific option
+- Added a wasabi CLI/API to download raw reads with a city-specific option
 
 
 Credits
