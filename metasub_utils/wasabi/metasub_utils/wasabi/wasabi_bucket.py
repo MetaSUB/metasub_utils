@@ -73,7 +73,7 @@ class WasabiBucket:
         raw_reads = {
             key.key
             for key in self.bucket.objects.filter(Prefix='data')
-            if key.key[:-9] == '.fastq.gz'
+            if key.key[-9:] == '.fastq.gz'
         }
         raw_read_files = []
         for raw_read in raw_reads:

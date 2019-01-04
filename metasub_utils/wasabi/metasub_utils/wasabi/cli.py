@@ -30,7 +30,7 @@ def cli_list_unassembled_data(profile_name):
 
 @wasabi.command('list-raw-reads')
 @click.option('-p', '--profile-name', default='wasabi')
-@click.argument('city_name', default=None)
+@click.option('-c', '--city-name', default=None)
 def cli_list_raw_reads(profile_name, city_name):
     """List unassembled data in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
@@ -41,12 +41,12 @@ def cli_list_raw_reads(profile_name, city_name):
 @wasabi.command('download-raw-reads')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
+@click.option('-c', '--city-name', default=None)
 @click.argument('target_dir', default='data')
-@click.argument('city_name', default=None)
-def cli_download_raw_data(dryrun, profile_name, target_dir, city_name):
+def cli_download_raw_data(dryrun, profile_name, city_name, target_dir):
     """Download raw sequencing data, from a particular city if specified."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
-    wasabi_bucket.download_unassembled_data(
+    wasabi_bucket.download_raw(
         city_name=city_name,
         target_dir=target_dir,
         dryrun=dryrun,
