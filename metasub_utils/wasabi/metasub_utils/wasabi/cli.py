@@ -28,11 +28,37 @@ def cli_list_unassembled_data(profile_name):
         print(file_key)
 
 
+@wasabi.command('list-raw-reads')
+@click.option('-p', '--profile-name', default='wasabi')
+@click.argument('city_name', default=None)
+def cli_list_raw_reads(profile_name, city_name):
+    """List unassembled data in the wasabi bucket."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    for file_key in wasabi_bucket.list_raw(city_name=city_name):
+        print(file_key)
+
+
+@wasabi.command('download-raw-reads')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.argument('target_dir', default='data')
+@click.argument('city_name', default=None)
+def cli_download_raw_data(dryrun, profile_name, target_dir, city_name):
+    """Download raw sequencing data, from a particular city if specified."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.download_unassembled_data(
+        city_name=city_name,
+        target_dir=target_dir,
+        dryrun=dryrun,
+    )
+    wasabi_bucket.close()
+
+
 @wasabi.command('download-unassembled-data')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('target_dir', default='data')
-def cli_download_contig_files(dryrun, profile_name, target_dir):
+def cli_download_unassembled_data(dryrun, profile_name, target_dir):
     """Download data without contig files from wasabi."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.download_unassembled_data(

@@ -5,6 +5,8 @@ from glob import glob
 from concurrent.futures import ThreadPoolExecutor
 from sys import stderr
 
+from gimmebio.metadata import get_samples_from_city
+
 from .constants import *
 
 
@@ -64,6 +66,28 @@ class WasabiBucket:
             '_'.join(basename(key).split('_')[:3]) not in all_assembled_keys
         }
         return unassembled_data
+
+    def list_raw(self, city_name=None):
+        """List raw read files, from a given city if specified."""
+        samples = set(get_samples_from_city(city_name))
+        raw_reads = {
+            key.key
+            for key in bucket.objects.filter(prefix='data')
+            if key.key[:-9] == '.fastq.gz'
+        }
+        raw_read_files = []
+        for raw_read in raw_reads:
+            sname = basename(raw_read).split('_1.fastq.gz')[0].split('_2.fastq.gz')[0]
+            if samples and sname not in samples:
+                continue
+            raw_read_files.append(raw_read)
+        return raw_read_files
+
+    def download_raw(self, city_name=None, target_dir='data', dryrun=True):
+        """Download raw sequencing data, from a particular city if specified."""
+        for read_file in self.list_raw(city_name=city_name):
+            local_path = target_dir + '/' + read_file.split('data/')[1]
+            self.download(read_file, local_path, dryrun)
 
     def download_unassembled_data(self, target_dir='data', dryrun=True):
         """Download data without contigs."""
