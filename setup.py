@@ -61,7 +61,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.4.0',
+    version='0.4.1',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utility functions for the MetaSUB Consortium',
@@ -74,7 +74,7 @@ setup(
     install_requires=[
         'future',
         'six',
-    ],
+    ] + list(SOURCES.keys()),
     entry_points={
         'console_scripts': [
             'metasub=metasub_utils.cli:main'
