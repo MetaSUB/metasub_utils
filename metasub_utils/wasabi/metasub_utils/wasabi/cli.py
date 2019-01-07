@@ -63,7 +63,7 @@ def cli_list_unassembled_data(profile_name):
 @click.option('-g/-s', '--grouped/--single', default=False)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
-@click.option('-s', '--sample-names', default=None, type=click.File('r'))
+@click.option('-n', '--sample-names', default=None, type=click.File('r'))
 def cli_list_raw_reads(grouped, profile_name, city_name, sample_names):
     """List unassembled data in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
@@ -82,7 +82,7 @@ def cli_list_raw_reads(grouped, profile_name, city_name, sample_names):
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
-@click.option('-s', '--sample-names', default=None, type=click.File('r'))
+@click.option('-n', '--sample-names', default=None, type=click.File('r'))
 @click.argument('target_dir', default='data')
 def cli_download_raw_data(dryrun, profile_name, city_name, sample_names, target_dir):
     """Download raw sequencing data, from a particular city if specified."""
