@@ -67,9 +67,11 @@ class WasabiBucket:
         }
         return unassembled_data
 
-    def list_raw(self, city_name=None, grouped=False):
+    def list_raw(self, sample_names=None, city_name=None, grouped=False):
         """List raw read files, from a given city if specified."""
         samples = set(get_samples_from_city(city_name))
+        if sample_names:
+            samples &= set(sample_names)
         raw_reads = {
             key.key
             for key in self.bucket.objects.filter(Prefix='data')
@@ -90,7 +92,7 @@ class WasabiBucket:
                 raw_list.append(read_files)
         return raw_list
 
-    def download_raw(self, city_name=None, target_dir='data', dryrun=True):
+    def download_raw(self, sample_names=None, city_name=None, target_dir='data', dryrun=True):
         """Download raw sequencing data, from a particular city if specified."""
         for read_file in self.list_raw(city_name=city_name):
             local_path = target_dir + '/' + read_file.split('data/')[1]
