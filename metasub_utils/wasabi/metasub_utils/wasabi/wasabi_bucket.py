@@ -67,7 +67,7 @@ class WasabiBucket:
         }
         return unassembled_data
 
-    def list_raw(self, city_name=None):
+    def list_raw(self, city_name=None, grouped=False):
         """List raw read files, from a given city if specified."""
         samples = set(get_samples_from_city(city_name))
         raw_reads = {
@@ -75,13 +75,20 @@ class WasabiBucket:
             for key in self.bucket.objects.filter(Prefix='data')
             if key.key[-9:] == '.fastq.gz'
         }
-        raw_read_files = []
+        raw_read_files = {}
         for raw_read in raw_reads:
             sname = basename(raw_read).split('_1.fastq.gz')[0].split('_2.fastq.gz')[0]
             if samples and sname not in samples:
                 continue
-            raw_read_files.append(raw_read)
-        return raw_read_files
+            raw_read_files[sname] = sorted([raw_read] + raw_read_files.get(sname, []))
+
+        raw_list = []
+        for read_files in raw_read_files.values():
+            if not grouped:
+                raw_list += read_files
+            else:
+                raw_list.append(read_files)
+        return raw_list
 
     def download_raw(self, city_name=None, target_dir='data', dryrun=True):
         """Download raw sequencing data, from a particular city if specified."""
@@ -97,14 +104,19 @@ class WasabiBucket:
                 continue
             self.download(key, local_path, dryrun)
 
+    def list_contigs(self, contig_file='contigs.fasta'):
+        """List all the contigs."""
+        return [
+            key.key
+            for key in self.bucket.objects.all()
+            if 'assemblies' in key.key and contig_file == basename(key.key)
+        ]
+
     def download_contigs(self,
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
         """Download contigs."""
-        for key in self.bucket.objects.all():
-            if 'assemblies' not in key.key or contig_file != basename(key.key):
-                continue
-
-            key_path = key.key.split('assemblies/')[1]
+        for key in self.list_contigs(contig_file=contig_file):
+            key_path = key.split('assemblies/')[1]
             key_dirs = dirname(key_path)
             local_path = join(
                 target_dir,

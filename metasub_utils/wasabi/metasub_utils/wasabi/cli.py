@@ -19,6 +19,37 @@ def cli_list_wasabi_files(profile_name):
         print(file_key)
 
 
+@wasabi.command('status')
+@click.option('-v/-c', '--verbose/--concise', default=False)
+@click.option('-p', '--profile-name', default='wasabi')
+def cli_wasabi_status(verbose, profile_name):
+    """Print a status report."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    samples_with_reads = {
+        '_'.join(raw_reads[0].split('/')[-1].split('_')[:3])
+        for raw_reads in wasabi_bucket.list_raw(grouped=True)
+    }
+    samples_with_contigs = {
+        contig_file.split('/')[-2].split('.metaspades')[0]
+        for contig_file in wasabi_bucket.list_contigs()
+    }
+    all_samples = samples_with_reads |  samples_with_contigs
+    samples_with_both = samples_with_reads & samples_with_contigs
+    samples_with_just_reads = samples_with_reads - samples_with_both
+    samples_with_just_contigs = samples_with_contigs - samples_with_both
+    click.echo(f'{len(all_samples)} total samples')
+    click.echo(f'{len(samples_with_both)} samples with reads and contigs')
+    click.echo(f'{len(samples_with_just_reads)} samples with just reads')
+    click.echo(f'{len(samples_with_just_contigs)} samples with just contigs')
+    if verbose:
+        for sample in samples_with_both:
+            print(f'{sample} BOTH')
+        for sample in samples_with_just_reads:
+            print(f'{sample} JUST_READS')
+        for sample in samples_with_just_contigs:
+            print(f'{sample} JUST_CONTIGS')
+
+
 @wasabi.command('list-unassembled')
 @click.argument('profile_name', default='wasabi')
 def cli_list_unassembled_data(profile_name):
@@ -29,12 +60,15 @@ def cli_list_unassembled_data(profile_name):
 
 
 @wasabi.command('list-raw-reads')
+@click.option('-g/-s', '--grouped/--single', default=False)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
-def cli_list_raw_reads(profile_name, city_name):
+def cli_list_raw_reads(grouped, profile_name, city_name):
     """List unassembled data in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
-    for file_key in wasabi_bucket.list_raw(city_name=city_name):
+    for file_key in wasabi_bucket.list_raw(city_name=city_name, grouped=grouped):
+        if grouped:
+            file_key = ' '.join(file_key)
         print(file_key)
 
 
