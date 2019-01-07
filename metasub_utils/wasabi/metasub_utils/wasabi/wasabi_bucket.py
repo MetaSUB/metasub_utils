@@ -71,7 +71,7 @@ class WasabiBucket:
         """List raw read files, from a given city if specified."""
         samples = set(get_samples_from_city(city_name))
         if sample_names:
-            samples &= set(sample_names)
+            samples |= set(sample_names)
         raw_reads = {
             key.key
             for key in self.bucket.objects.filter(Prefix='data')
