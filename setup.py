@@ -61,7 +61,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.4.1',
+    version='0.5.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utility functions for the MetaSUB Consortium',
