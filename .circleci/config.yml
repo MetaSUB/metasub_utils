@@ -12,11 +12,11 @@ default_test: &default_test
   steps:
     - checkout
 
-    #- restore_cache:
-    #    keys:
-    #      # CIRCLE_JOB is the best approximation of MODULE_NAME env var
-    #      - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
-    #      - v1-dependencies-
+    - restore_cache:
+        keys:
+          # CIRCLE_JOB is the best approximation of MODULE_NAME env var
+          - v1-dependencies-{{ .Environment.CIRCLE_JOB }}-
+          - v1-dependencies-
 
     - run:
         name: Install Python Dependencies
@@ -26,13 +26,13 @@ default_test: &default_test
           pip install -r requirements.txt
           cd metasub_utils/$MODULE_NAME
           pip install -r requirements.txt
-    # - save_cache:
-    #     paths:
-    #       - ./venv
-    #     # We cannot use the {{ checksum }} helper for each submodule.
-    #     # Instead caches are saved with {{ epoch }} to ensure they are
-    #     # updated for each save.
-    #     key: v1-dependencies-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
+     - save_cache:
+         paths:
+           - ./venv
+         # We cannot use the {{ checksum }} helper for each submodule.
+         # Instead caches are saved with {{ epoch }} to ensure they are
+         # updated for each save.
+         key: v1-dependencies-{{ .Environment.CIRCLE_JOB }}-{{ epoch }}
 
     - run:
         name: Run tests
