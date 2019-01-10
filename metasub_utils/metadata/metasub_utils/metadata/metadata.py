@@ -32,6 +32,6 @@ def get_samples_from_city(city_name, project_name=None):
         city_name = city_name.lower()
         filtered = filtered[filtered['city'] == city_name]
     if project_name:
-        project_name = project_name.lower()
+        project_name = project_name.upper()
         filtered = filtered[filtered['project'] == project_name]
     return list(filtered.index)

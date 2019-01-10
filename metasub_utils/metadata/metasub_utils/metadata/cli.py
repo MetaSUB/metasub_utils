@@ -14,6 +14,12 @@ def metadata():
     pass
 
 
+@metadata.command('version')
+def cli_get_version():
+    """Print the version."""
+    click.echo('v0.3.1')
+
+
 @metadata.command('cities')
 def cli_get_canonical_city_names():
     """Print a list of canonical city names."""

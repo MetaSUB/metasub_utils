@@ -18,6 +18,11 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
     ],
+    entry_points={
+        'console_scripts': [
+            'metasub-metadata=metasub_utils.metadata.cli:metadata'
+        ]
+    },
     namespace_packages=['metasub_utils'],
     packages=[microlib_name],
     install_requires=requirements,
