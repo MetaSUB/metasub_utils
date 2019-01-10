@@ -94,9 +94,10 @@ class WasabiBucket:
                 raw_list.append(read_files)
         return raw_list
 
-    def download_raw(self, sample_names=None, city_name=None, target_dir='data', dryrun=True):
+    def download_raw(self,
+        sample_names=None, city_name=None, project_name=None, target_dir='data', dryrun=True):
         """Download raw sequencing data, from a particular city if specified."""
-        for read_file in self.list_raw(city_name=city_name):
+        for read_file in self.list_raw(city_name=city_name, project_name=None):
             local_path = target_dir + '/' + read_file.split('data/')[1]
             self.download(read_file, local_path, dryrun)
 
