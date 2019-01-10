@@ -1,8 +1,6 @@
 """Test suite for metadata."""
 
 from unittest import TestCase
-from os.path import isfile
-from random import randint
 
 from metasub_utils.metadata import (
     get_complete_metadata,
@@ -23,3 +21,13 @@ class TestMetadata(TestCase):
         """Test that we get some sample names from a city (assume correct)."""
         sample_names = get_samples_from_city('paris')
         self.assertTrue(sample_names)
+
+    def test_get_samples_from_project(self):
+        """Test that we can filter sample names by project."""
+        sample_names = get_samples_from_city(None, project_name='tigress')
+        self.assertTrue(len(sample_names) == 83)
+
+    def test_get_samples_from_city_project(self):
+        """Test that we can filter sample names by city and project."""
+        sample_names = get_samples_from_city('swansea', project_name='tigress')
+        self.assertTrue(len(sample_names) == 6)

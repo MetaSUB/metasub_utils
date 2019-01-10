@@ -67,9 +67,11 @@ class WasabiBucket:
         }
         return unassembled_data
 
-    def list_raw(self, sample_names=None, city_name=None, grouped=False):
+    def list_raw(self, sample_names=None, city_name=None, project_name=None, grouped=False):
         """List raw read files, from a given city if specified."""
-        samples = set(get_samples_from_city(city_name))
+        samples = set()
+        if city_name or project_name:
+            samples |= set(get_samples_from_city(city_name, project_name=project_name))
         if sample_names:
             samples |= set(sample_names)
         raw_reads = {

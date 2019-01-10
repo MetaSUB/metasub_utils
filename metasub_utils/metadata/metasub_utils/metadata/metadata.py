@@ -21,13 +21,17 @@ def get_canonical_city_names(lower=False):
     return city_names
 
 
-def get_samples_from_city(city_name):
+def get_samples_from_city(city_name, project_name=None):
     """Return a list of sample names from a particular city.
 
-    If city_name is False return an empty list.
+    If city_name is False return a list with all sample names.
     """
-    if not city_name:
-        return []
-    city_name = city_name.lower()
     metadata = get_complete_metadata()
-    return list(metadata[metadata['city'] == city_name].index)
+    filtered = metadata
+    if city_name:
+        city_name = city_name.lower()
+        filtered = filtered[filtered['city'] == city_name]
+    if project_name:
+        project_name = project_name.upper()
+        filtered = filtered[filtered['project'] == project_name]
+    return list(filtered.index)
