@@ -33,7 +33,7 @@ def cli_wasabi_status(verbose, profile_name):
         contig_file.split('/')[-2].split('.metaspades')[0]
         for contig_file in wasabi_bucket.list_contigs()
     }
-    all_samples = samples_with_reads |  samples_with_contigs
+    all_samples = samples_with_reads | samples_with_contigs
     samples_with_both = samples_with_reads & samples_with_contigs
     samples_with_just_reads = samples_with_reads - samples_with_both
     samples_with_just_contigs = samples_with_contigs - samples_with_both
@@ -63,14 +63,15 @@ def cli_list_unassembled_data(profile_name):
 @click.option('-g/-s', '--grouped/--single', default=False)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
+@click.option('-c', '--project-name', default=None)
 @click.option('-n', '--sample-names', default=None, type=click.File('r'))
-def cli_list_raw_reads(grouped, profile_name, city_name, sample_names):
+def cli_list_raw_reads(grouped, profile_name, city_name, project_name, sample_names):
     """List unassembled data in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     if sample_names:
         sample_names = {line.strip() for line in sample_names}
     file_keys = wasabi_bucket.list_raw(
-        city_name=city_name, grouped=grouped, sample_names=sample_names
+        city_name=city_name, grouped=grouped, sample_names=sample_names, project_name=project_name,
     )
     for file_key in file_keys:
         if grouped:
@@ -82,15 +83,17 @@ def cli_list_raw_reads(grouped, profile_name, city_name, sample_names):
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
+@click.option('-c', '--project-name', default=None)
 @click.option('-n', '--sample-names', default=None, type=click.File('r'))
 @click.argument('target_dir', default='data')
-def cli_download_raw_data(dryrun, profile_name, city_name, sample_names, target_dir):
+def cli_download_raw_data(dryrun, profile_name, city_name, project_name, sample_names, target_dir):
     """Download raw sequencing data, from a particular city if specified."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     if sample_names:
         sample_names = {line.strip() for line in sample_names}
     wasabi_bucket.download_raw(
         sample_names=sample_names,
+        project_name=project_name,
         city_name=city_name,
         target_dir=target_dir,
         dryrun=dryrun,

@@ -41,3 +41,19 @@ class TestWasabi(TestCase):
         raw_reads = bucket.list_raw(city_name='paris')
         bucket.close()
         self.assertTrue(raw_reads)
+
+    @with_aws_credentials
+    def test_list_from_project(self):
+        """Test that we can filter sample names by project."""
+        bucket = WasabiBucket()
+        raw_reads = bucket.list_raw(project_name='tigress')
+        bucket.close()
+        self.assertTrue(len(raw_reads) == 2 * 83)
+
+    @with_aws_credentials
+    def test_list_from_city_project(self):
+        """Test that we can filter sample names by city and project."""
+        bucket = WasabiBucket()
+        raw_reads = bucket.list_raw(city_name='swansea', project_name='tigress')
+        bucket.close()
+        self.assertTrue(len(raw_reads) == 2 * 6)
