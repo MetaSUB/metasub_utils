@@ -57,3 +57,10 @@ class TestWasabi(TestCase):
         raw_reads = bucket.list_raw(city_name='swansea', project_name='tigress')
         bucket.close()
         self.assertTrue(len(raw_reads) == 2 * 6)
+
+    @with_aws_credentials
+    def test_download_from_city_project(self):
+        """Test that we do not get an obvious error on download."""
+        bucket = WasabiBucket()
+        bucket.download_raw(city_name='swansea', project_name='tigress')
+        bucket.close()
