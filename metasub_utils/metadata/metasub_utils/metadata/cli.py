@@ -30,9 +30,10 @@ def cli_get_metadata(uploadable):
 
 
 @metadata.command('samples-from-city')
+@click.option('-p', '--project-name', default=None)
 @click.argument('city_name')
-def cli_get_samples_from_city(city_name):
+def cli_get_samples_from_city(project_name, city_name):
     """Print the names of samples from the specified city."""
-    sample_names = get_samples_from_city(city_name)
+    sample_names = get_samples_from_city(city_name, project_name=project_name)
     for sample_name in sample_names:
         click.echo(sample_name)
