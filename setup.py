@@ -17,9 +17,9 @@ SOURCES = {
     'metasub_utils.athena': 'metasub_utils/athena',
     'metasub_utils.bridges': 'metasub_utils/bridges',
     'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
-    'metasub_utils.metadata': 'metasub_utils/metadata',
+    'metasub_utils.metadata==0.3.1': 'metasub_utils/metadata',
     'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
-    'metasub_utils.wasabi': 'metasub_utils/wasabi',
+    'metasub_utils.wasabi==0.5.1': 'metasub_utils/wasabi',
     'metasub_utils.zurich': 'metasub_utils/zurich',
 }
 
@@ -59,7 +59,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.5.1',
+    version='0.5.2',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utility functions for the MetaSUB Consortium',
