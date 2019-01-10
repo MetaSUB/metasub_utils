@@ -10,6 +10,11 @@ def wasabi():
     pass
 
 
+@wasabi.command('version')
+def cli_version():
+    click.echo('v0.5.4')
+
+
 @wasabi.command('list')
 @click.argument('profile_name', default='wasabi')
 def cli_list_wasabi_files(profile_name):
@@ -83,7 +88,7 @@ def cli_list_raw_reads(grouped, profile_name, city_name, project_name, sample_na
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
-@click.option('-c', '--project-name', default=None)
+@click.option('-r', '--project-name', default=None)
 @click.option('-n', '--sample-names', default=None, type=click.File('r'))
 @click.argument('target_dir', default='data')
 def cli_download_raw_data(dryrun, profile_name, city_name, project_name, sample_names, target_dir):
