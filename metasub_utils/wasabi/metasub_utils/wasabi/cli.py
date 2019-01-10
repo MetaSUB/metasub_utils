@@ -63,7 +63,7 @@ def cli_list_unassembled_data(profile_name):
 @click.option('-g/-s', '--grouped/--single', default=False)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
-@click.option('-c', '--project-name', default=None)
+@click.option('-r', '--project-name', default=None)
 @click.option('-n', '--sample-names', default=None, type=click.File('r'))
 def cli_list_raw_reads(grouped, profile_name, city_name, project_name, sample_names):
     """List unassembled data in the wasabi bucket."""
