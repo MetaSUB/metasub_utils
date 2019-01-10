@@ -5,28 +5,34 @@ from os import getcwd, makedirs, environ
 from os.path import isfile, dirname
 from random import randint
 
+from functools import wraps
+
 from metasub_utils.wasabi import WasabiBucket
 
 
-def test_with_aws_credentials(func):
+def with_aws_credentials(func):
     """Make a default AWS credential file in the home dir."""
-    cred_filename = environ['HOME'] + '/.aws/credentials'
-    if isfile(cred_filename):
-        return
-    makedirs(dirname(cred_filename), exist_ok=True)
+    @wraps(func)
+    def decorated_function(self, *args, **kwargs):
+        cred_filename = environ['HOME'] + '/.aws/credentials'
+        if isfile(cred_filename):
+            return
+        makedirs(dirname(cred_filename), exist_ok=True)
 
-    access_key, secret_key = environ['AWS_ACCESS_KEY'], environ['AWS_SECRET_ACCESS_KEY']
-    cred_str = f'[default]\naws_access_key_id={access_key}\naws_secret_access_key={secret_key}\n'
-    with open(cred_filename, 'w') as cf:
-        cf.write(cred_str)
+        access_key, secret_key = environ['AWS_ACCESS_KEY'], environ['AWS_SECRET_ACCESS_KEY']
+        creds = f'[default]\naws_access_key_id={access_key}\naws_secret_access_key={secret_key}\n'
+        with open(cred_filename, 'w') as cf:
+            cf.write(creds)
 
-    return func
+        return func(self, *args, **kwargs)
+
+    return decorated_function
 
 
 class TestWasabi(TestCase):
     """Test suite for wasabi."""
 
-    @test_with_aws_credentials
+    @with_aws_credentials
     def test_download_file(self):
         bucket = WasabiBucket()
         local_name = f'{getcwd()}/temp_{randint(0, 1000 * 1000)}'
@@ -35,14 +41,14 @@ class TestWasabi(TestCase):
         self.assertTrue(isfile(local_name))
         self.assertTrue(len(open(local_name).read()) > 0)
 
-    @test_with_aws_credentials
+    @with_aws_credentials
     def test_list_raw(self):
         bucket = WasabiBucket()
         raw_reads = bucket.list_raw(city_name='paris')
         bucket.close()
         self.assertTrue(raw_reads)
 
-    @test_with_aws_credentials
+    @with_aws_credentials
     def test_list_from_project(self):
         """Test that we can filter sample names by project."""
         bucket = WasabiBucket()
@@ -50,7 +56,7 @@ class TestWasabi(TestCase):
         bucket.close()
         self.assertTrue(len(raw_reads) == 2 * 83)
 
-    @test_with_aws_credentials
+    @with_aws_credentials
     def test_list_from_city_project(self):
         """Test that we can filter sample names by city and project."""
         bucket = WasabiBucket()
