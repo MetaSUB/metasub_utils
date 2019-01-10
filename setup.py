@@ -2,9 +2,7 @@
 Based on: https://blog.shazam.com/python-microlibs-5be9461ad979
 """
 
-
 import os
-import pip
 from six import iteritems
 from setuptools import setup
 from setuptools.command.develop import develop
@@ -61,7 +59,7 @@ class InstallCmd(install):
 
 setup(
     name=PACKAGE_NAME,
-    version='0.5.0',
+    version='0.5.1',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     description='Utility functions for the MetaSUB Consortium',
