@@ -64,7 +64,7 @@ class TestWasabi(TestCase):
         bucket.close()
         self.assertTrue(len(raw_reads) == 2 * 6)
 
-    @test_with_aws_credentials
+    @with_aws_credentials
     def test_download_from_city_project(self):
         """Test that we do not get an obvious error on download."""
         bucket = WasabiBucket()
