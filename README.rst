@@ -84,6 +84,15 @@ To download data from a specific city run
     $ metasub wasabi download-raw-reads --wetrun --city-name <city_name>
 
 
+If your city has a large number of samples you may want to split the download into chunks. You can do this with the following script.
+
+.. code-block:: bash
+
+    metasub metadata samples-from-city <city_name> > all_sample_names.txt
+    split -l <chunk_size> all_sample_names.txt chunk.
+    for f in chunk.*; do echo $f; metasub wasabi download-raw-reads --sample-names $f; done
+
+
 Changelog
 ---------
 
