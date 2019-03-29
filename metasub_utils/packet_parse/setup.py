@@ -22,7 +22,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
     ],
-    namespace_packages=['packet_parse'],
+    namespace_packages=['metasub_utils'],
     packages=[microlib_name],
     install_requires=requirements,
 )
