@@ -9,7 +9,7 @@ requirements = [
 
 setup(
     name=microlib_name,
-    version='0.1.0',
+    version='0.1.5',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',

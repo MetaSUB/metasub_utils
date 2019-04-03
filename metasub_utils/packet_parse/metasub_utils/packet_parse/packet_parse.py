@@ -1,9 +1,15 @@
 
-from capalyzer import DataTableFactory
-from os import env
+from capalyzer.packet_parser import DataTableFactory
+from os import environ
+
+from .metadata_ontology import add_ontology
 
 
 class MetaSUBTableFactory(DataTableFactory):
+
+    def __init__(self, *args, **kwargs):
+        super(MetaSUBTableFactory, self).__init__(*args, **kwargs)
+        self.metadata = add_ontology(self.metadata)
 
     @classmethod
     def factory(cls, packet_dir=None, **kwargs):
@@ -13,14 +19,14 @@ class MetaSUBTableFactory(DataTableFactory):
         constraints. I.e. air=True, core=True should return no samples.
         """
         if packet_dir is None:
-            packet_dir = env['METASUB_DATA_PACKET_DIR']
+            packet_dir = environ['METASUB_DATA_PACKET_DIR']
         base_factory = cls(packet_dir, metadata_tbl='metadata/complete_metadata.csv')
         metadata = base_factory.metadata
         for arg_name, val in kwargs.items():
             if arg_name == 'core':
                 arg_name = 'core_project'
                 val = 'core' if val else 'not_core'
-            metadata = metadata.query(f'{arg_name} == {val}')
+            metadata = metadata.query(f'{arg_name} == "{val}"')
         return base_factory.copy(new_metadata=metadata)
 
     @classmethod

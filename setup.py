@@ -21,7 +21,7 @@ SOURCES = {
     'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
     'metasub_utils.wasabi==0.5.4': 'metasub_utils/wasabi',
     'metasub_utils.zurich': 'metasub_utils/zurich',
-    'metasub_utils.packet_parse==0.1.0': 'metasub_utils/packet_parse',
+    'metasub_utils.packet_parse==0.1.4': 'metasub_utils/packet_parse',
 }
 
 

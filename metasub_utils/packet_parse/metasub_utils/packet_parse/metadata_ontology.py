@@ -11,9 +11,12 @@ def add_ontology(metadata):
 
 
 def has_keyword(target, *queries):
-    for query in queries:
-        if query in target:
-            return True
+    try:
+        for query in queries:
+            if query in target:
+                return True
+    except TypeError:
+        pass
     return False
 
 
@@ -44,6 +47,7 @@ def add_place_ontology(metadata):
     """Return a pandas dataframe with metadata and place ontologies."""
     metadata = metadata.copy()
     metadata['coastal'] = metadata.apply(coastal, reduce=True, axis=1)
+    return metadata
 
 
 def coastal(row):

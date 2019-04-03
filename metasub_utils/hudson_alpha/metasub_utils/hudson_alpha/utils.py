@@ -1,6 +1,7 @@
 """Utilities for Hudson Alpha."""
 
 import requests
+from os.path import basename
 
 from .constants import *
 
