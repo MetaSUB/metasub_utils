@@ -26,6 +26,10 @@ class MetaSUBTableFactory(DataTableFactory):
             if arg_name == 'core':
                 arg_name = 'core_project'
                 val = 'core' if val else 'not_core'
+            if arg_name == 'air':
+                if val:
+                    metadata = metadata.query(f'project == "CSD17_AIR"')
+                continue
             metadata = metadata.query(f'{arg_name} == "{val}"')
         return base_factory.copy(new_metadata=metadata)
 

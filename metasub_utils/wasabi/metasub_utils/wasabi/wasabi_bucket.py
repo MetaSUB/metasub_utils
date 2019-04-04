@@ -119,11 +119,34 @@ class WasabiBucket:
             if 'assemblies' in key.key and contig_file == basename(key.key)
         ]
 
+    def list_kmers(self, ext='.jf'):
+        """List all the contigs."""
+        top_dir = 'kmers/'  # all kmer files are in this dir
+        return [
+            key.key
+            for key in self.bucket.objects.all()
+            if (key.key[:len(top_dir)] == top_dir) and (ext == key.key[-len(ext):])
+        ]
+
     def download_contigs(self,
                          target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
         """Download contigs."""
         for key in self.list_contigs(contig_file=contig_file):
             key_path = key.split('assemblies/')[1]
+            key_dirs = dirname(key_path)
+            local_path = join(
+                target_dir,
+                key_dirs,
+                contig_file,
+            )
+            if isfile(local_path):
+                continue
+            self.download(key, local_path, dryrun)
+
+    def download_kmers(self, target_dir='kmers', ext='.jf', dryrun=True):
+        """Download kmers."""
+        for key in self.list_kmers(ext=ext):
+            key_path = key.split('kmers/')[1]
             key_dirs = dirname(key_path)
             local_path = join(
                 target_dir,

@@ -12,10 +12,20 @@ def wasabi():
 
 @wasabi.command('version')
 def cli_version():
-    click.echo('v0.5.4')
+    click.echo('v0.6.0')
 
 
-@wasabi.command('list')
+@wasabi.group('list')
+def cli_list():
+    pass
+
+
+@wasabi.group('download')
+def cli_download():
+    pass
+
+
+@cli_list.command('all')
 @click.argument('profile_name', default='wasabi')
 def cli_list_wasabi_files(profile_name):
     """List all files in the wasabi bucket."""
@@ -55,7 +65,7 @@ def cli_wasabi_status(verbose, profile_name):
             print(f'{sample} JUST_CONTIGS')
 
 
-@wasabi.command('list-unassembled')
+@cli_list.command('unassembled')
 @click.argument('profile_name', default='wasabi')
 def cli_list_unassembled_data(profile_name):
     """List unassembled data in the wasabi bucket."""
@@ -64,7 +74,7 @@ def cli_list_unassembled_data(profile_name):
         print(file_key)
 
 
-@wasabi.command('list-raw-reads')
+@cli_list.command('raw-reads')
 @click.option('-g/-s', '--grouped/--single', default=False)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
@@ -84,7 +94,7 @@ def cli_list_raw_reads(grouped, profile_name, city_name, project_name, sample_na
         print(file_key)
 
 
-@wasabi.command('download-raw-reads')
+@cli_download.command('raw-reads')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.option('-c', '--city-name', default=None)
@@ -106,7 +116,7 @@ def cli_download_raw_data(dryrun, profile_name, city_name, project_name, sample_
     wasabi_bucket.close()
 
 
-@wasabi.command('download-unassembled-data')
+@cli_download.command('unassembled-data')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('target_dir', default='data')
@@ -120,7 +130,7 @@ def cli_download_unassembled_data(dryrun, profile_name, target_dir):
     wasabi_bucket.close()
 
 
-@wasabi.command('download-contigs')
+@cli_download.command('contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
 @click.argument('target_dir', default='assemblies')
@@ -128,6 +138,40 @@ def cli_download_contig_files(dryrun, profile_name, target_dir):
     """Download contig files from wasabi."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
     wasabi_bucket.download_contigs(
+        target_dir=target_dir,
+        dryrun=dryrun,
+    )
+    wasabi_bucket.close()
+
+
+@cli_list.command('contigs')
+@click.option('-f', '--file-pattern', default='contigs.fasta')
+@click.argument('profile_name', default='wasabi')
+def cli_list_contig_files(file_pattern, profile_name):
+    """List all files in the wasabi bucket."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    for file_key in wasabi_bucket.list_contigs(contig_file=file_pattern):
+        print(file_key)
+
+
+@cli_list.command('kmers')
+@click.option('-e', '--ext', default='.jf')
+@click.argument('profile_name', default='wasabi')
+def cli_list_kmer_files(ext, profile_name):
+    """List all files in the wasabi bucket."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    for file_key in wasabi_bucket.list_kmers(ext=ext):
+        print(file_key)
+
+
+@cli_download.command('kmers')
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.argument('target_dir', default='kmers')
+def cli_download_kmer_files(dryrun, profile_name, target_dir):
+    """Download contig files from wasabi."""
+    wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    wasabi_bucket.download_kmers(
         target_dir=target_dir,
         dryrun=dryrun,
     )
