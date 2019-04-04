@@ -1,17 +1,22 @@
 from setuptools import setup
 
-microlib_name = 'metasub_utils.hudson_alpha'
+microlib_name = 'metasub_utils.packet_parse'
 
 requirements = [
-    'requests',
+    'capalyzer',
+    'pandas',
 ]
 
 setup(
     name=microlib_name,
-    version='0.2.1',
+    version='0.1.6',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
+    entry_points={
+        'console_scripts': [
+        ]
+    },
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
