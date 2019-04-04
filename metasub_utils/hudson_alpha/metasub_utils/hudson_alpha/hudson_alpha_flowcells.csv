@@ -2,10 +2,10 @@ csd_2017,MetaSUB_CSD2017_November_Batch,haib17CEM5241,Mason/haib17CEM5241/data_1
 csd_2017,MetaSUB_CSD2017_November_Batch,haib17CEM5241,Mason/haib17CEM5241/data_180814/files_HMGW3CCXY.txt
 csd_2017,MetaSUB_CSD2017_November_Batch,haib17CEM5241,Mason/haib17CEM5241/data_180823/files_HMGMHCCXY.txt
 csd_2017,MetaSUB_CSD2017_November_Batch,haib17CEM5241,Mason/haib17CEM5241/data_180814/files_HMGTJCCXY.txt
-csd_2017_air_samples,CSD17,air,samples,haib18CEM5332,Mason/haib18CEM5332/data_180405/files_HK7G5CCXY.txt
-csd_2017_air_samples,CSD17,air,samples,haib18CEM5332,Mason/haib18CEM5332/data_180626/files_HMCMJCCXY.txt
-csd_2017_air_samples,CSD17,air,samples,haib18CEM5332,Mason/haib18CEM5332/data_180814/files_HMGTJCCXY.txt
-csd_2017_air_samples,CSD17,air,samples,haib18CEM5332,Mason/haib18CEM5332/data_180814/files_HMGW3CCXY.txt
+csd_2017_air_samples,CSD17 air samples,haib18CEM5332,Mason/haib18CEM5332/data_180405/files_HK7G5CCXY.txt
+csd_2017_air_samples,CSD17 air samples,haib18CEM5332,Mason/haib18CEM5332/data_180626/files_HMCMJCCXY.txt
+csd_2017_air_samples,CSD17 air samples,haib18CEM5332,Mason/haib18CEM5332/data_180814/files_HMGTJCCXY.txt
+csd_2017_air_samples,CSD17 air samples,haib18CEM5332,Mason/haib18CEM5332/data_180814/files_HMGW3CCXY.txt
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_170616/files_HKC32ALXX.txt
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_170619/files_H2NYMCCXY.txt
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_170920/files_H3KHWCCXY.txt
@@ -13,20 +13,20 @@ csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_170920/files_H75CGCCXY.t
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_171106/files_H7KYMCCXY.txt
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_180626/files_HMCMJCCXY.txt
 csd_2016,MetaSUB,haib17CEM4890,Mason/haib17CEM4890/data_181213/files_HTVVJCCXY.txt
-csd_2017,MetaSub,Samples,R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCVMTCCXY.txt
-csd_2017,MetaSub,Samples,R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCCGHCCXY.txt
-csd_2017,MetaSub,Samples,R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCY5JCCXY.txt
-csd_2017,MetaSub,Samples,R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCV72CCXY.txt
-csd_2017,MetaSub,Samples,R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171007/files_HCY5HCCXY.txt
-tigress_uk,MetaSub,UK,Samples,haib17CEM5080,Mason/haib17CEM5080/data_170915/files_H7VL7CCXY.txt
+csd_2017,MetaSub Samples R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCVMTCCXY.txt
+csd_2017,MetaSub Samples R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCCGHCCXY.txt
+csd_2017,MetaSub Samples R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCY5JCCXY.txt
+csd_2017,MetaSub Samples R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171002/files_HCV72CCXY.txt
+csd_2017,MetaSub Samples R:9/22/2017,haib17CEM5106,Mason/haib17CEM5106/data_171007/files_HCY5HCCXY.txt
+tigress_uk,MetaSub UK Samples,haib17CEM5080,Mason/haib17CEM5080/data_170915/files_H7VL7CCXY.txt
 csd_2017,CSD2017,haib17DB4959,Bezdan/haib17DB4959/data_170719/files_H3MGVCCXY.txt
 csd_2017,CSD2017,haib17DB4959,Bezdan/haib17DB4959/data_180626/files_HMCMJCCXY.txt
 csd_2017,CSD2017,haib17DB4959,Bezdan/haib17DB4959/data_180814/files_HMGTJCCXY.txt
 csd_2017,CSD2017,haib17DB4959,Bezdan/haib17DB4959/data_180814/files_HMGW3CCXY.txt
 csd_2017,CSD2017,haib17DB4959,Bezdan/haib17DB4959/data_181213/files_HTWH2CCXY.txt
-csd_2016,MetaSUB,CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_180626/files_H7HJMCCXY.txt
-csd_2016,MetaSUB,CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_180626/files_HMCMJCCXY.txt
-csd_2016,MetaSUB,CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_181213/files_HTWH2CCXY.txt
+csd_2016,MetaSUB CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_180626/files_H7HJMCCXY.txt
+csd_2016,MetaSUB CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_180626/files_HMCMJCCXY.txt
+csd_2016,MetaSUB CSD16,haib17KIU4866,Udekwu/haib17KIU4866/data_181213/files_HTWH2CCXY.txt
 csd_2017,MetaSUB_2017_April2018batch,haib18CEM5453,Mason/haib18CEM5453/data_180626/files_HMCMJCCXY.txt
 csd_2017,MetaSUB_2017_April2018batch,haib18CEM5453,Mason/haib18CEM5453/data_180709/files_HMC2KCCXY.txt
 csd_2017,MetaSUB_2017_April2018batch,haib18CEM5453,Mason/haib18CEM5453/data_180814/files_HMGTJCCXY.txt
