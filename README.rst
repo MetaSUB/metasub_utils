@@ -105,7 +105,7 @@ If your city has a large number of samples you may want to split the download in
 Changelog
 ---------
 
-v0.6.0
+v0.7.0
 
 - Added command to download and list kmers
 - added ``download`` and ``list`` sub-commands to ``wasabi``
