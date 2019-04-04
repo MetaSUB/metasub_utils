@@ -68,20 +68,29 @@ Once you have installed the aws command line tool you need to configure an accou
     Default region name [None]: 
     Default output format [None]:
     
-Once your account is configured you can use this utility package to download files. The following commands will be most useful.
+Once your account is configured you can use this utility package to download files. The following commands will be most useful. If you are downloading a large amount of data it may be faster to use the AWS-CLI_ directly.
 
 .. code-block:: bash
 
-    $ metasub wasabi download-contigs --help
-    $ metasub wasabi download-raw-reads --help
+    $ metasub wasabi download contigs --help
+    $ metasub wasabi download raw-reads --help
+    $ metasub wasabi download kmers --help
     
 Note that all download commands dryrun by default. You will need to add the `--wetrun` flag to actually download data.
+
+You can also list the files without download. This gives cleaner output than a download dryrun would.
+
+.. code-block:: bash
+
+    $ metasub wasabi list contigs --help
+    $ metasub wasabi list raw-reads --help
+    $ metasub wasabi list kmers --help
 
 To download data from a specific city run
 
 .. code-block:: bash
 
-    $ metasub wasabi download-raw-reads --wetrun --city-name <city_name>
+    $ metasub wasabi download raw-reads --wetrun --city-name <city_name>
 
 
 If your city has a large number of samples you may want to split the download into chunks. You can do this with the following script.
@@ -95,6 +104,11 @@ If your city has a large number of samples you may want to split the download in
 
 Changelog
 ---------
+
+v0.6.0
+
+- Added command to download and list kmers
+- added ``download`` and ``list`` sub-commands to ``wasabi``
 
 v0.4.0
 
