@@ -28,6 +28,7 @@ A collection of utilites to manage the MetaSUB project.
 - Metagenscope is a set of utilites to upload data to metagenscope_
 - Wasabi uploads and downloads data from Wasabi Hot Storage, an S3 clone
 - Zurich uploads and downloads data from the Zurich MetaSUB SFTP server 
+- Packet Parser contains utilities to parse the MetaSUB data packet.
 
 
 Installation
