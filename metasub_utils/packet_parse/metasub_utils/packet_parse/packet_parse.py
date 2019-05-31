@@ -2,7 +2,7 @@
 from capalyzer.packet_parser import DataTableFactory
 from os import environ
 
-from .metadata_ontology import add_ontology
+from .metadata_ontology import add_ontology, clean_city_names
 
 
 class MetaSUBTableFactory(DataTableFactory):
@@ -10,6 +10,7 @@ class MetaSUBTableFactory(DataTableFactory):
     def __init__(self, *args, **kwargs):
         super(MetaSUBTableFactory, self).__init__(*args, **kwargs)
         self.metadata = add_ontology(self.metadata)
+        self.metadata = clean_city_names(self.metadata)
 
     @classmethod
     def factory(cls, packet_dir=None, **kwargs):
