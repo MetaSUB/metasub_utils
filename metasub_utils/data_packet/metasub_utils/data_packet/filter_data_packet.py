@@ -3,6 +3,7 @@ from glob import glob
 from subprocess import call
 from os import makedirs
 from os.path import join, basename, isfile
+from tempfile import NamedTemporaryFile
 
 from metasub_utils.metadata import get_complete_metadata
 
@@ -37,12 +38,23 @@ def make_city_packet(city_name, data_packet_dir='.'):
     make_sub_packet(city_packet_dir, sample_names_filename, data_packet_dir=data_packet_dir)
 
 
-def make_sub_packet(sub_packet_dir, sample_names_filename, data_packet_dir='.'):
+def make_sub_packet(sub_packet_dir, sample_names_file, data_packet_dir='.', copy_metadata=True):
     """Make a sub packet given a directory and a list of sample names."""
+
+    if isinstance(sample_names_file, str):
+        sample_names_filename = sample_names_file
+    else:
+        with NamedTemporaryFile(mode='w', delete=False) as snf:
+            for sample_name in sample_names_file:
+                print(sample_name, file=snf)
+            sample_names_filename = snf.name
+
     for packet_sub_dir in ['antimicrobial_resistance', 'metadata', 'other', 'taxonomy', 'pathways']:
         sub_packet_sub_dir = join(sub_packet_dir, packet_sub_dir)
         makedirs(sub_packet_sub_dir, exist_ok=True)
         packet_sub_dir = join(data_packet_dir, packet_sub_dir)
+        if packet_sub_dir == 'metadata' and not copy_metadata:
+            continue
         tables = glob(packet_sub_dir + '/*.csv')
         for table in tables:
             sub_table_filename = join(sub_packet_sub_dir, basename(table))

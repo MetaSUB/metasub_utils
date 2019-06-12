@@ -21,6 +21,7 @@ sub_clis = [
     ('metasub_utils.metadata.cli', 'metadata'),
     ('metasub_utils.metagenscope.cli', 'mgs'),
     ('metasub_utils.wasabi.cli', 'wasabi'),
+    ('metasub_utils.data_packet.cli', 'packet'),
 ]
 
 
