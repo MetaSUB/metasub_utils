@@ -1,6 +1,7 @@
 
 from capalyzer.packet_parser import DataTableFactory
 from os import environ
+from os.path import join
 
 from .metadata_ontology import add_ontology, clean_city_names
 
@@ -21,18 +22,25 @@ class MetaSUBTableFactory(DataTableFactory):
         """
         if packet_dir is None:
             packet_dir = environ['METASUB_DATA_PACKET_DIR']
+
+        if kwargs['duplicate']:
+            packet_dir = join(packet_dir, 'duplicates')
+        if kwargs['control']:
+            packet_dir = join(packet_dir, 'controls')
+
         base_factory = cls(packet_dir, metadata_tbl='metadata/complete_metadata.csv')
         metadata = base_factory.metadata
         for arg_name, val in kwargs.items():
             if arg_name == 'core':
-                arg_name = 'core_project'
-                val = 'core' if val else 'not_core'
-            if arg_name == 'air':
-                if val:
-                    metadata = metadata.query(f'project == "CSD17_AIR"')
-                continue
-            metadata = metadata.query(f'{arg_name} == "{val}"')
+                metadata = metadata.loc[metadata['control_type_coarse'].isna()]
+            else:
+                metadata = metadata.query(f'{arg_name} == "{val}"')
         return base_factory.copy(new_metadata=metadata)
+
+    @classmethod
+    def all_factory(cls, packet_dir=None):
+        """Return a MetaSUBTableFactory over all samples."""
+        return cls.factory(packet_dir)
 
     @classmethod
     def core_factory(cls, packet_dir=None):
@@ -40,12 +48,17 @@ class MetaSUBTableFactory(DataTableFactory):
         return cls.factory(packet_dir, core=True)
 
     @classmethod
-    def air_factory(cls, packet_dir=None):
-        """Return a MetaSUBTableFactory over air samples."""
-        return cls.factory(packet_dir, air=True)
+    def control_factory(cls, packet_dir=None):
+        """Return a MetaSUBTableFactory over control samples."""
+        return cls.factory(packet_dir, control=True)
 
     @classmethod
-    def city_factory(cls, city, packet_dir=None, air=False, core=False):
+    def duplicate_factory(cls, packet_dir=None):
+        """Return a MetaSUBTableFactory over duplicate samples."""
+        return cls.factory(packet_dir, duplicate=True)
+
+    @classmethod
+    def city_factory(cls, city, packet_dir=None, air=False, core=True):
         """Return a MetaSUBTableFactory for core/air samples from a given city."""
         core = not air
-        return cls.factory(packet_dir, core=core, air=air, city=city)
+        return cls.factory(packet_dir, core=core, city=city)
