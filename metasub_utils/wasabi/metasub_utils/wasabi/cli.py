@@ -12,7 +12,7 @@ def wasabi():
 
 @wasabi.command('version')
 def cli_version():
-    click.echo('v0.6.0')
+    click.echo('v0.7.0')
 
 
 @wasabi.group('list')
@@ -133,11 +133,22 @@ def cli_download_unassembled_data(dryrun, profile_name, target_dir):
 @cli_download.command('contigs')
 @click.option('-d/-w', '--dryrun/--wetrun', default=True)
 @click.option('-p', '--profile-name', default='wasabi')
+@click.option('-c', '--city-name', default=None)
+@click.option('-r', '--project-name', default=None)
+@click.option('-n', '--sample-names', default=None, type=click.File('r'))
+@click.option('-f', '--file-pattern', default='scaffolds.fasta')
 @click.argument('target_dir', default='assemblies')
-def cli_download_contig_files(dryrun, profile_name, target_dir):
+def cli_download_contig_files(dryrun, profile_name, city_name, project_name,
+                              sample_names, file_pattern, target_dir):
     """Download contig files from wasabi."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
+    if sample_names:
+        sample_names = {line.strip() for line in sample_names}
     wasabi_bucket.download_contigs(
+        contig_file=file_pattern,
+        sample_names=sample_names,
+        city_name=city_name,
+        project_name=project_name,
         target_dir=target_dir,
         dryrun=dryrun,
     )
@@ -145,12 +156,25 @@ def cli_download_contig_files(dryrun, profile_name, target_dir):
 
 
 @cli_list.command('contigs')
-@click.option('-f', '--file-pattern', default='contigs.fasta')
-@click.argument('profile_name', default='wasabi')
-def cli_list_contig_files(file_pattern, profile_name):
+@click.option('-d/-w', '--dryrun/--wetrun', default=True)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.option('-c', '--city-name', default=None)
+@click.option('-r', '--project-name', default=None)
+@click.option('-n', '--sample-names', default=None, type=click.File('r'))
+@click.option('-f', '--file-pattern', default='scaffolds.fasta')
+def cli_list_contig_files(dryrun, profile_name, city_name, project_name,
+                          sample_names, file_pattern):
     """List all files in the wasabi bucket."""
     wasabi_bucket = WasabiBucket(profile_name=profile_name)
-    for file_key in wasabi_bucket.list_contigs(contig_file=file_pattern):
+    if sample_names:
+        sample_names = {line.strip() for line in sample_names}
+    file_keys = wasabi_bucket.list_contigs(
+        contig_file=file_pattern,
+        sample_names=sample_names,
+        city_name=city_name,
+        project_name=project_name,
+    )
+    for file_key in file_keys:
         print(file_key)
 
 

@@ -19,7 +19,7 @@ SOURCES = {
     'metasub_utils.hudson_alpha': 'metasub_utils/hudson_alpha',
     'metasub_utils.metadata>=0.3.1': 'metasub_utils/metadata',
     'metasub_utils.metagenscope': 'metasub_utils/metagenscope',
-    'metasub_utils.wasabi>=0.6.0': 'metasub_utils/wasabi',
+    'metasub_utils.wasabi>=0.7.0': 'metasub_utils/wasabi',
     'metasub_utils.zurich': 'metasub_utils/zurich',
     'metasub_utils.packet_parse>=0.1.6': 'metasub_utils/packet_parse',
     'metasub_utils.data_packet>=0.3.0': 'metasub_utils/data_packet',

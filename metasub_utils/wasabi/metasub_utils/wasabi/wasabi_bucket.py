@@ -111,13 +111,23 @@ class WasabiBucket:
                 continue
             self.download(key, local_path, dryrun)
 
-    def list_contigs(self, contig_file='contigs.fasta'):
+    def list_contigs(self,
+                     sample_names=None, city_name=None, project_name=None,
+                     contig_file='scaffolds.fasta'):
         """List all the contigs."""
-        return [
+        samples = set()
+        if city_name or project_name:
+            samples |= set(get_samples_from_city(city_name, project_name=project_name))
+        if sample_names:
+            samples |= set(sample_names)
+        contigs = [
             key.key
             for key in self.bucket.objects.all()
             if 'assemblies' in key.key and contig_file == basename(key.key)
         ]
+        if samples:
+            contigs = [el for el in contigs if basename(dirname(el)).split('.')[0] in samples]
+        return contigs
 
     def list_kmers(self, ext='.jf'):
         """List all the contigs."""
@@ -129,9 +139,11 @@ class WasabiBucket:
         ]
 
     def download_contigs(self,
-                         target_dir='assemblies', contig_file='contigs.fasta', dryrun=True):
+                         sample_names=None, city_name=None, project_name=None,
+                         target_dir='assemblies', contig_file='scaffolds.fasta', dryrun=True):
         """Download contigs."""
-        for key in self.list_contigs(contig_file=contig_file):
+        for key in self.list_contigs(sample_names=sample_names, city_name=city_name,
+                                     project_name=project_name, contig_file=contig_file):
             key_path = key.split('assemblies/')[1]
             key_dirs = dirname(key_path)
             local_path = join(
