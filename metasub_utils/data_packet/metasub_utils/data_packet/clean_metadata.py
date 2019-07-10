@@ -176,7 +176,7 @@ def add_lab_controls_coarse(row):
 
 def controlify(tbl):
     tbl['control_type_fine'] = tbl.apply(add_lab_controls_fine, axis=1)
-    tbl['control_type_coarse'] = tbl.apply(add_lab_controls_fine, axis=1)
+    tbl['control_type_coarse'] = tbl.apply(add_lab_controls_coarse, axis=1)
 
     tbl['control_type_fine'] = tbl.apply(lambda r: id_control(r, 'control_type_fine'), axis=1)
     tbl['control_type_coarse'] = tbl.apply(lambda r: id_control(r, 'control_type_coarse'), axis=1)
@@ -247,12 +247,13 @@ def clean_metadata_table(tbl):
     cntrls = deduped.loc[~deduped['control_type_coarse'].isna()]
     mems = set()
     dupes = tbl.loc[tbl.apply(lambda r: not deduper(r, mems), axis=1)]
-    dupe_primary = deduped.loc[deduped['ha_id'].isin(dupes['ha_id']), ['uuid', 'ha_id']]
+    dupe_primary = deduped.loc[deduped['ha_id'].isin(dupes['ha_id'])]
 
-    dupe_map = dupe_primary.join(
+    dupe_map = dupe_primary[['uuid', 'ha_id']].join(
         dupes[['uuid', 'ha_id']].set_index('ha_id'),
         on='ha_id', how='outer', lsuffix='_primary', rsuffix='_secondary'
     )
+    dupes = pd.concat([dupe_primary, dupes])
     dupe_map = dupe_map[['uuid_primary', 'uuid_secondary', 'ha_id']]
 
     return deduped, cntrls, dupes, dupe_map

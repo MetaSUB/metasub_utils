@@ -23,9 +23,10 @@ class MetaSUBTableFactory(DataTableFactory):
         if packet_dir is None:
             packet_dir = environ['METASUB_DATA_PACKET_DIR']
 
-        if kwargs['duplicate']:
+        if kwargs.pop('duplicate', False):
             packet_dir = join(packet_dir, 'duplicates')
-        if kwargs['control']:
+
+        if kwargs.pop('control', False):
             packet_dir = join(packet_dir, 'controls')
 
         base_factory = cls(packet_dir, metadata_tbl='metadata/complete_metadata.csv')
@@ -33,6 +34,7 @@ class MetaSUBTableFactory(DataTableFactory):
         for arg_name, val in kwargs.items():
             if arg_name == 'core':
                 metadata = metadata.loc[metadata['control_type_coarse'].isna()]
+                metadata = metadata.query('city != "montevideo"')
             else:
                 metadata = metadata.query(f'{arg_name} == "{val}"')
         return base_factory.copy(new_metadata=metadata)
