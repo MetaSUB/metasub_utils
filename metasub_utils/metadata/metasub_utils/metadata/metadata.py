@@ -2,7 +2,16 @@
 
 import pandas as pd
 
-from .constants import UPLOADABLE_TABLE_URL, COMPLETE_TABLE_URL, CANONICAL_CITIES_URL
+from .constants import UPLOADABLE_TABLE_URL, COMPLETE_TABLE_URL, CANONICAL_CITIES_URL, IDS
+
+
+def normalize_sample_name(name_in, default=None, tbl=None):
+    tbl = get_complete_metadata() if not tbl else tbl
+    for id_type in IDS:
+        mytbl = tbl.query(f'{id_type} == "{name_in}"')
+        if mytbl.shape[0]:
+            return list(mytbl.index)[0]
+    return default
 
 
 def get_complete_metadata(uploadable=False):

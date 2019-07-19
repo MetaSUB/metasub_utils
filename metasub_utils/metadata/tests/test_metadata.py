@@ -5,6 +5,7 @@ from unittest import TestCase
 from metasub_utils.metadata import (
     get_complete_metadata,
     get_samples_from_city,
+    normalize_sample_name,
 )
 
 
@@ -31,3 +32,7 @@ class TestMetadata(TestCase):
         """Test that we can filter sample names by city and project."""
         sample_names = get_samples_from_city('swansea', project_name='tigress')
         self.assertTrue(len(sample_names) == 6)
+
+    def test_normalize_sample_name(self):
+        normed = normalize_sample_name('CSD16-DOH-066')
+        self.assertEqual('haib17KIU4866_HMCMJCCXY_SL335923', normed)
