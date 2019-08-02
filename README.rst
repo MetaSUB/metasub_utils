@@ -55,7 +55,7 @@ Install from source.
 Downloading Data From Wasabi
 ----------------------------
 
-The public v1.2.0 of the MetaSUB data packet may be found [here](https://s3.wasabisys.com/metasub/data_packets/metasub_data_packet_v1_2.tar.gz)
+The public v1.2.0 of the MetaSUB data packet may be found at here_
 
 To download private data or assemblies from wasabi you will need API credentials. Please contact David Danko (dcd3001@med.cornell.edu) to acquire these keys.
 
@@ -133,3 +133,4 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 .. _AWS-CLI: https://docs.aws.amazon.com/cli/latest/userguide/installing.html
+.. _here: https://s3.wasabisys.com/metasub/data_packets/metasub_data_packet_v1_2.tar.gz
