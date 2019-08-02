@@ -55,7 +55,9 @@ Install from source.
 Downloading Data From Wasabi
 ----------------------------
 
-To download data or assemblies from wasabi you will need API credentials. Please contact David Danko (dcd3001@med.cornell.edu) to acquire these keys.
+The public v1.2.0 of the MetaSUB data packet may be found [here](https://s3.wasabisys.com/metasub/data_packets/metasub_data_packet_v1_2.tar.gz)
+
+To download private data or assemblies from wasabi you will need API credentials. Please contact David Danko (dcd3001@med.cornell.edu) to acquire these keys.
 
 Wasabi is a clone of amazon S3. To use Wasabi you will need to install the AWS-CLI_
 
