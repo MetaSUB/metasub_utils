@@ -11,7 +11,7 @@ requirements = [
 
 setup(
     name=microlib_name,
-    version='0.7.0',
+    version='0.8.0',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
@@ -28,4 +28,5 @@ setup(
     namespace_packages=['metasub_utils'],
     packages=[microlib_name],
     install_requires=requirements,
+    package_data={microlib_name: ['metasub_public_files.txt']},
 )

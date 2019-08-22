@@ -55,7 +55,20 @@ Install from source.
 Downloading Data From Wasabi
 ----------------------------
 
-To download data or assemblies from wasabi you will need API credentials. Please contact David Danko (dcd3001@med.cornell.edu) to acquire these keys.
+To download raw data or assemblies from wasabi you will need API credentials. Please contact David Danko (dcd3001@med.cornell.edu) to acquire these keys. Currently keys may only be obtained by members of the MetaSUB Consortium.
+
+Reads with human DNA removed are publicly available and can be obtained without an API key. To list the relevant files use the following command. Various options for fitlering samples are available.
+
+.. code-block:: bash
+
+    $ metasub wasabi list nonhuman-reads --help
+    $ metasub wasabi list nonhuman-reads --city-name paris
+
+To download these files use a tool like curl or wget. For example.
+
+.. code-block:: bash
+
+    $ metasub wasabi list nonhuman-reads --city-name paris | xargs -l wget
 
 Wasabi is a clone of amazon S3. To use Wasabi you will need to install the AWS-CLI_
 

@@ -3,6 +3,7 @@
 import click
 
 from .wasabi_bucket import WasabiBucket
+from .public_files import list_nonhuman_reads
 
 
 @click.group()
@@ -86,6 +87,25 @@ def cli_list_raw_reads(grouped, profile_name, city_name, project_name, sample_na
     if sample_names:
         sample_names = {line.strip() for line in sample_names}
     file_keys = wasabi_bucket.list_raw(
+        city_name=city_name, grouped=grouped, sample_names=sample_names, project_name=project_name,
+    )
+    for file_key in file_keys:
+        if grouped:
+            file_key = ' '.join(file_key)
+        print(file_key)
+
+
+@cli_list.command('nonhuman-reads')
+@click.option('-g/-s', '--grouped/--single', default=False)
+@click.option('-p', '--profile-name', default='wasabi')
+@click.option('-c', '--city-name', default=None)
+@click.option('-r', '--project-name', default=None)
+@click.option('-n', '--sample-names', default=None, type=click.File('r'))
+def cli_list_nonhuman_reads(grouped, profile_name, city_name, project_name, sample_names):
+    """List unassembled data in the wasabi bucket."""
+    if sample_names:
+        sample_names = {line.strip() for line in sample_names}
+    file_keys = list_nonhuman_reads(
         city_name=city_name, grouped=grouped, sample_names=sample_names, project_name=project_name,
     )
     for file_key in file_keys:
