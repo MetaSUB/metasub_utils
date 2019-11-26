@@ -70,7 +70,10 @@ To download these files use a tool like curl or wget. For example.
 
 .. code-block:: bash
 
-    $ metasub wasabi list nonhuman-reads --city-name paris | xargs -l wget
+    $ metasub wasabi list nonhuman-reads --city-name paris | sed 's/s3:\/\//https:\/\/s3.wasabisys.com\//g' | xargs -l wget
+    
+    
+A simple list of publicly available read files is available `here <https://github.com/MetaSUB/metasub_utils/blob/master/metasub_utils/wasabi/metasub_utils/wasabi/metasub_public_files.txt>`_.
 
 Wasabi is a clone of amazon S3. To use Wasabi you will need to install the AWS-CLI_
 
