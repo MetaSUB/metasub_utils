@@ -28,7 +28,7 @@ from .utils import download_file, parse_flowcell_table, get_root_and_read_number
 
 def process_flowcells(dryrun, ha_auth):
     flowcells = parse_flowcell_table()
-    for metasub_project_name, _, ha_project_id, ha_file_url in flowcells:
+    for metasub_project_name, _, ha_project_id, date, ha_file_url in flowcells:
         flowcell_number = ha_file_url.split('files_')[-1].split('.txt')[0]
         ha_file_url = URL + ha_file_url
         ha_filename_url = 'filenames'.join(ha_file_url.split('files'))
