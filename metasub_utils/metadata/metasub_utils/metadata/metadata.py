@@ -6,7 +6,7 @@ from .constants import UPLOADABLE_TABLE_URL, COMPLETE_TABLE_URL, CANONICAL_CITIE
 
 
 def normalize_sample_name(name_in, default=None, tbl=None):
-    tbl = get_complete_metadata() if not tbl else tbl
+    tbl = get_complete_metadata() if tbl is None else tbl
     for id_type in IDS:
         mytbl = tbl.query(f'{id_type} == "{name_in}"')
         if mytbl.shape[0]:

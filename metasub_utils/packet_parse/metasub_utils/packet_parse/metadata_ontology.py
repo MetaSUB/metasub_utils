@@ -6,7 +6,7 @@ NAN = float('nan')
 def clean_city_names(metadata, min_count=3):
     """Make all city names lowercase with '_' over ' '."""
     metadata = metadata.copy()
-    metadata['city'] = metadata['city'].apply(lambda el: '_'.join(el.lower().split()))
+    metadata['city'] = metadata['city'].apply(lambda el: '_'.join(str(el).lower().split()))
     counts = metadata['city'].value_counts()
     cities = counts[counts >= min_count].index
     metadata = metadata.loc[metadata['city'].isin(cities)]

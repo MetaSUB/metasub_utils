@@ -1,9 +1,14 @@
 
+import hashlib
+import pandas as pd
+
 from capalyzer.packet_parser import DataTableFactory
 from os import environ
-from os.path import join
+from os.path import join, isfile
 
 from .metadata_ontology import add_ontology, clean_city_names
+
+CACHED_TAXA_TABLE_FILENAME = 'taxonomy/{checksum}_cached_taxa_table.csv'
 
 
 class MetaSUBTableFactory(DataTableFactory):
@@ -12,6 +17,30 @@ class MetaSUBTableFactory(DataTableFactory):
         super(MetaSUBTableFactory, self).__init__(*args, **kwargs)
         self.metadata = add_ontology(self.metadata)
         self.metadata = clean_city_names(self.metadata)
+
+    def taxonomy(self, *args, **kwargs):
+        """Provide a default."""
+        force_rebuild = kwargs.pop('force_rebuild', False)
+        if args or kwargs:
+            return super(MetaSUBTableFactory, self).taxonomy(*args, **kwargs)
+
+        cached_name = CACHED_TAXA_TABLE_FILENAME.format(
+            checksum=hashlib.sha256(self.metadata.to_json().encode()).hexdigest()
+        )
+        cached_taxa_path = join(self.packet_dir, cached_name)
+        if force_rebuild or not isfile(cached_taxa_path):
+            tbl = super(MetaSUBTableFactory, self).taxonomy(
+                min_reads=3,
+                strict=64,
+                max_read_slope=10,
+                rank='species'
+            )
+            tbl.to_csv(cached_taxa_path)
+        return pd.read_csv(
+            cached_taxa_path,
+            header=0,
+            index_col=0,
+        )
 
     @classmethod
     def factory(cls, packet_dir=None, **kwargs):
@@ -33,7 +62,7 @@ class MetaSUBTableFactory(DataTableFactory):
         metadata = base_factory.metadata
         for arg_name, val in kwargs.items():
             if arg_name == 'core':
-                metadata = metadata.loc[metadata['control_type_coarse'].isna()]
+                metadata = metadata.loc[metadata['control_type'].isna()]
                 metadata = metadata.query('city != "montevideo"')
             else:
                 metadata = metadata.query(f'{arg_name} == "{val}"')

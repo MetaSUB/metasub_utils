@@ -8,7 +8,9 @@ import microbe_directory as md
 
 from capalyzer.packet_parser import DataTableFactory, NCBITaxaTree, annotate_taxa, TaxaTree
 from capalyzer.packet_parser.data_utils import group_small_cols
-from capalyzer.packet_parser.diversity_metrics import shannon_entropy, richness, chao1
+from capalyzer.packet_parser.diversity_metrics import (
+    shannon_entropy, richness, chao1, rarefaction_analysis
+)
 from sklearn.decomposition import PCA
 from scipy.cluster.hierarchy import linkage, cophenet, leaves_list
 from scipy.spatial.distance import squareform, pdist, jensenshannon
@@ -24,101 +26,62 @@ from matplotlib import pyplot as plt
 
 from capalyzer.constants import MICROBE_DIR
 
-
-class MetaSUBFiguresData:
-
-    def __init__(self, packet_dir, ncbi_tree=None):
-        self.tabler = DataTableFactory(packet_dir, metadata_tbl='metadata/complete_metadata.csv')
-        self.meta = self.tabler.metadata
-        if not ncbi_tree:
-            ncbi_tree = NCBITaxaTree.parse_files()
-
-        self.wide_taxa = self.build_wide_taxonomy()
-        self.wide_phyla_rel = None  # TODO
-        # TODO index of metadata must == index of all tables
-        self.function_groups = self.build_functional_groups()
-
-        self.amrs = self.build_amrs()
-
-    @property
-    def wide_taxa_rel(self):
-        """Give a wide taxa table with values as relative abundances."""
-        pass
-
-    def build_wide_taxonomy(self):
-        """Return a pandas df with species in columns, samples in rows. Values are read counts."""
-
-    def build_functional_groups(self):
-        paths = core_tabler.pathways()
-        mypaths = paths[[el for el in paths.columns if 'unclassified' not in el and 'UNINTEG' not in el]]
-        co = mypaths.corr()
-        co['path_1'] = co.index
-        co = co.melt(id_vars=['path_1'])
-        co.columns = ['path_1', 'path_2', 'value']
-        co = co.query('value > = 0.75')
-
-        def wordcloud(paths):
-            tbl = {}
-            for path in paths:
-                for word in path.split():
-                    tbl[word] = 1 + tbl.get(word, 0)
-            otbl = sorted([(k, v) for k, v in tbl.items()], key=lambda x: -x[1])
-            tbl = [k for k, v in otbl if v > 1]
-            tbl = [k for k in tbl if len(k) > 3 and 'PWY' not in k]
-            if len(tbl) < 3:
-                tbl = [k for k, _ in otbl if 'PWY' not in k]
-            return tbl[:10]
-
-        G = nx.Graph()
-        for _, row in co.iterrows():
-            G.add_edge(row['path_1'], row['path_2'])
-
-        n, p = 0, 0
-        comps = [comp for comp in nx.connected_components(G) if len(comp) > 1]
-        wcs = {f'COMP_{i}': (comp, wordcloud(comp)) for i, comp in enumerate(comps)}
-        for name, (comp, wc) in wcs.items():
-            if len(comp) == 1:
-                continue
-            n += 1
-            p += len(comp)
-            these_paths = mypaths[comp].sum(axis=1)
-            mypaths = mypaths.drop(columns=comp)
-            mypaths[name] = these_paths
-
-        mypaths = (mypaths.T / mypaths.T.sum()).T.dropna()
-        low_abundance_paths = mypaths.columns[mypaths.mean() < 0.01]
-        low_abundance = mypaths[low_abundance_paths].sum(axis=1)
-        mypaths = mypaths.drop(columns=low_abundance_paths)
-        mypaths['Other'] = low_abundance
-
-        cats = {
-            'PWY-3781: aerobic respiration I (cytochrome c)': 'Aerobic Respiration',
-            'COMP_0': 'Fatty Acid Biosynthesis',
-            'COMP_1': 'L-arginine Biosynthesis',
-            'COMP_2': 'Pyrimidine Biosynthesis',
-            'COMP_3': 'Glycerol Biosynthesis',
-            'COMP_8': 'Glycolysis',
-            'COMP_6': 'Folate Biosynthesis',
-            'COMP_10': 'Methionine Biosynthesis',
-            'COMP_11': 'Purine Biosynthesis',
-        }
-        foo = mypaths.rename(columns=cats)
-        foo['sample'] = foo.index
-        foo['continent'] = core_tabler.metadata['continent']
-        foo['continent'] = [str(el) for el in foo['continent']]
-        foo = foo.melt(id_vars=['sample', 'continent'])
-        foo = foo.dropna()
-
-        return foo
-
-    def build_amrs(self):
-        """TODO: REVIEW."""
-        amrs = self.tabler.amrs(kind='class', remove_zero_rows=False).drop(columns=['Elfamycins']).dropna()
-        amrs = (amrs.T / (amrs.T.sum() + 0.000001)).T
-        return amrs
+from .figs_data import MetaSUBFiguresData
 
 
 class MetaSUBFigures(MetaSUBFiguresData):
+
+    def tbl1(self):
+        """Return a pandas dataframe listing where and when samples were collected."""
+        tbl = self.meta.copy()
+
+        tbl = tbl.loc[tbl['control_type'].isna()]
+        tbl = tbl.loc[~tbl['city'].isna()]
+        tbl = tbl.query('city != "other"')
+        tbl = pd.crosstab(tbl['city'], tbl['project'])
+
+        tbl['Region'] = self.meta.groupby('city').apply(lambda x: x['continent'].iloc[0])
+        tbl['Region'] = tbl['Region'].str.replace('_', ' ').str.title()
+        tbl.index = tbl.index.str.replace('_', ' ').str.title()
+
+        tbl = tbl.set_index('Region', append=True)
+        tbl = tbl.reorder_levels(['Region', 'city'])
+        tbl = tbl.sort_index()
+
+        other_projs = list(tbl.columns[tbl.sum(axis=0) < 100]) + ['PATHOMAP_WINTER']
+        tbl['Other'] = tbl[other_projs].sum(axis=1)
+        tbl = tbl.drop(columns=other_projs)
+        tbl['Total'] = tbl.sum(axis=1)
+        tbl = tbl[['PILOT', 'CSD16', 'CSD17', 'Other', 'Total']]  # column order
+
+        continent_totals = tbl.groupby(level=0).sum()
+        continent_totals['city'] = 'AAA Region Total'  # AAA so sort puts these first
+        continent_totals = continent_totals.set_index('city', append=True)
+        tbl = pd.concat([tbl, continent_totals]).sort_index()
+
+        ctrl = self.meta.copy()
+        ctrl = ctrl.loc[~ctrl['control_type'].isna()]
+        ctrl = pd.crosstab(ctrl['control_type'], ctrl['project'])
+
+        ctrl.index.names = ['city']
+        ctrl['Region'] = 'Control'
+        ctrl = ctrl.set_index('Region', append=True)
+        ctrl = ctrl.reorder_levels(['Region', 'city'])
+
+        other_projs = ctrl.columns[ctrl.sum(axis=0) < 10]
+        ctrl['Other'] = ctrl[other_projs].sum(axis=1)
+        ctrl = ctrl.drop(columns=other_projs)
+        ctrl['Total'] = ctrl.sum(axis=1)
+        cols = [
+            col for col in ['PILOT', 'CSD16', 'CSD17', 'Other', 'Total']
+            if col in ctrl.columns
+        ]
+        ctrl = ctrl[cols]
+
+        tbl = pd.concat([ctrl, tbl])
+        tbl.index = tbl.index.set_levels(tbl.index.levels[1].str.replace('AAA', ''), level=1)
+
+        return tbl
 
     def fig1(self, N=75):
         """Figure showing the major taxa found in the metasub data."""
@@ -164,7 +127,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
         )
         return plot
 
-    def fig1_major_taxa_curves(N=75):
+    def fig1_major_taxa_curves(self, N=75):
         """Return two P9 panels showing prevalence and abundance distributions of major taxa."""
         taxa = self.wide_taxa_rel
         city = taxa.groupby(by=self.meta['city']).median()
@@ -172,15 +135,16 @@ class MetaSUBFigures(MetaSUBFiguresData):
         top_taxa = taxa.mean().sort_values(ascending=False)[:N].index
         taxa, city = 1000 * 1000 * taxa[top_taxa], 1000 * 1000 * city[top_taxa]
         taxa_prev, city_prev = prevalence(taxa), prevalence(city)
-
+        taxa_prev = pd.DataFrame({'prevalence': taxa_prev, 'names': taxa_prev.index})
+        city_prev = pd.DataFrame({'prevalence': city_prev, 'names': city_prev.index})
         taxa_mean, taxa_kurtosis, taxa_sd = taxa.mean(), taxa.kurtosis(), taxa.std()
 
         def add_stats(taxon):
             m, k, sd = taxa_mean[taxon], taxa_kurtosis[taxon], taxa_sd[taxon]
             return f'{taxon} ({m // 1000:.0f}k, {sd // 1000:.0f}k, {k:.0f})'
 
-        taxa.columns = taxa.columns.apply(add_stats)
-        city.columns = city.columns.apply(add_stats)
+        taxa.columns = taxa.columns.to_series().apply(add_stats)
+        city.columns = city.columns.to_series().apply(add_stats)
 
         taxa, city = taxa.melt(), city.melt()
         taxa['kind'] = 'All Samples'
@@ -207,7 +171,6 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     legend_position='bottom',
                 )
         )
-        taxa_prev, city_prev = taxa_prev.melt(), city_prev.melt()
         taxa_prev['kind'] = 'All Samples'
         city_prev['kind'] = 'City Median'
         both_prev = pd.concat([taxa_prev, city_prev])
@@ -217,10 +180,10 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 facet_grid('taxon~.', scales="free_y") +
                 theme_minimal() +
                 ylab('Prevalence') +
-                scale_fill_brewer(palette="Set1") +
+                scale_fill_brewer(type='qualitative', palette=3, direction=1) +
                 labs(color="") +
                 coord_flip() +
-                scale_y_continuous(breaks=c(0.1, 0.5, 1)) +
+                scale_y_continuous(breaks=(0.1, 0.5, 1)) +
                 theme(
                     axis_text_x=element_text(angle=0, hjust=1),
                     axis_text_y=element_blank(),
@@ -235,12 +198,65 @@ class MetaSUBFigures(MetaSUBFiguresData):
 
     def fig1_species_rarefaction(self):
         """Return a P9 rarefaction curve for species."""
+        ns = range(1, self.wide_taxa.shape[0], 100)
+        rare = rarefaction_analysis(self.wide_taxa, ns=ns)
+        return (
+            ggplot(rare, aes(x='N', y='Taxa')) +
+                geom_point(size=4, colour="black") +
+                geom_smooth() +
+                theme_minimal() +
+                theme(
+                    text=element_text(size=50),
+                )
+        )
 
     def fig1_reference_comparisons(self):
         """Return P9 figures comparing metasub to skin and soil."""
 
+        def my_plot(tbl, y_lab, yint, yint_lab):
+            return (
+                ggplot(tbl, aes(x='continent', y='jaccard', fill='continent')) +
+                    geom_violin(width=1.2) +
+                    geom_boxplot(fill='white', width=0.1) +
+                    theme_minimal() +
+                    scale_y_sqrt() +
+                    ylim(0, 0.5) +
+                    scale_fill_brewer(type='qualitative', palette=3, direction=1) +
+                    xlab('') +
+                    ylab(y_lab) +
+                    geom_hline(yintercept=yint, color='red', size=4) +
+                    annotate(geom='label', x='Oceania', y=(yint - 0.15), label=yint_lab, size=30) +
+                    theme(
+                        text = element_text(size=80),
+                        legend_position='none',
+                        axis_text_x=element_text(angle=90),
+                    )
+            )
+
+        return [
+            my_plot(self.emp, 'MASH Jaccard Distance to Soil', 0.16451445767195777, "Soil-Soil Mean"),
+            my_plot(
+                self.hmp.query('body_site == "skin"'), 'MASH Jaccard Distance to Skin',
+                0.083, "Skin-Skin Mean"
+            ),
+        ]
+
     def fig1_fraction_unclassified(self):
         """Return a figure showing the fraction of reads which could not be classified."""
+        return (
+            ggplot(self.rps, aes(x='continent', y='unknown', fill='surface')) +
+                geom_violin() +
+                geom_boxplot(fill='white', width=0.1) +
+                theme_minimal() +
+                scale_fill_brewer(palette='Set2') +
+                xlab('Region') +
+                ylab('Fraction Unclassified DNA') +
+                theme(
+                    text=element_text(size=50),
+                    legend_position='bottom',
+                    axis_text_x=element_text(angle=30),
+                )
+        )
 
     def fig2(self):
         """Figure showing the variation between metasub samples."""
@@ -262,14 +278,13 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 geom_point(size=5.5, colour="black") +
                 geom_point(size=4) +
                 theme_minimal() +
-                scale_color_brewer(palette="Set1", direction=1) +
-                guides(color = guide_legend(override.aes=list(size=16))) +
+                scale_color_brewer(type='qualitative', palette=3, direction=1) +
                 theme_minimal() +
                 coord_flip() +
                 theme(
-                    text = element_text(size=50),
-                    panel_grid_major = element_blank(),
-                    panel_grid_minor = element_blank(),
+                    text=element_text(size=50),
+                    panel_grid_major=element_blank(),
+                    panel_grid_minor=element_blank(),
                     legend_position='none',
                     axis_text_x=element_blank(),
                     axis_title_x=element_blank(),
@@ -306,9 +321,8 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     geom_col() +
                     facet_grid('.~continent', scales="free") +
                     scale_fill_brewer(palette="Set3", direction=1) +
-                    guides(color=guide_legend(override_aes=list(size=16))) +
                     theme_minimal() +
-                    scale_y_sqrt(expand=c(0, 0)) +
+                    scale_y_sqrt(expand=(0, 0)) +
                     labs(fill=label) +
                     theme(
                         text=element_text(size=70),
@@ -319,7 +333,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                         axis_title_x=element_blank(),
                         axis_text_y=element_blank(),
                         axis_title_y=element_blank(),
-                        panel_border=element_rect(colour="black", fill=NA, size=2),
+                        panel_border=element_rect(colour="black", size=2),
                     )
             )
 
@@ -332,12 +346,16 @@ class MetaSUBFigures(MetaSUBFiguresData):
     def fig2_pca_flows(self, n_pcs=100):
         pca = PCA(n_components=n_pcs)
         pcs = pca.fit_transform(self.wide_taxa_rel)
-        pcs = pd.DataFrame(data=pcs, index=taxa.index, columns=[f'PC{i}' for i in range(NPCS)])
+        pcs = pd.DataFrame(
+            data=pcs,
+            index=self.wide_taxa_rel.index,
+            columns=[f'PC{i}' for i in range(n_pcs)]
+        )
         pcs['surface'] = self.meta['surface_ontology_fine']
-        pcs['temperature'] = core_tabler.metadata['city_ave_june_temp_c']
-        pcs['pop_density'] = core_tabler.metadata['city_population_density']
-        pcs['continent'] = core_tabler.metadata['continent']
-        pcs['city_koppen_climate'] = core_tabler.metadata['city_koppen_climate']
+        pcs['temperature'] = self.meta['city_ave_june_temp_c']
+        pcs['pop_density'] = self.meta['city_population_density']
+        pcs['continent'] = self.meta['continent']
+        pcs['city_koppen_climate'] = self.meta['city_koppen_climate']
         pcs['sample'] = pcs.index
         pcs = pcs.loc[pcs['surface'] != 'nan']
         pcs = pcs.loc[pcs['surface'] != 'control']
@@ -368,7 +386,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     ylim(-0.3, 0.5) +
                     ggtitle(label) +
                     theme(
-                        text = element_text(size=50),
+                        text=element_text(size=50),
                         panel_grid_minor=element_blank(),
                         legend_position='right',
                     )
@@ -391,12 +409,76 @@ class MetaSUBFigures(MetaSUBFiguresData):
 
     def fig5_amr_cooccur(self):
         """Return a heatmap showing co-occurence between AMR genes."""
+        tbl = self.amrs > 0
+        amr_jaccard = 1 - pd.DataFrame(
+            squareform(pdist(tbl, metric='jaccard')),
+            index=tbl.index, columns=tbl.index
+        )
+
+        AMR_CLASSES = set(self.amrs.columns)
+
+        def get_amr_class(el):
+            for amr_class in AMR_CLASSES:
+                if amr_class in el:
+                    return amr_class
+            return 'unknown'
+
+        amr_class = amr_jaccard.index.map(get_amr_class)
+        lut = dict(zip(amr_class.unique(), sns.hls_palette(amr_class.nunique())))
+        lut['unknown'] = (0.9, 0.9, 0.9)
+        class_colors = amr_class.map(lut)
+
+        return sns.clustermap(
+            amr_jaccard, center=0.35, cmap="RdBu_r",
+            row_colors=class_colors,
+            figsize=(40, 40)
+        )
 
     def fig5_amr_richness_by_city(self):
         """Return a figure showing the distribution of the number of AMR genes by city."""
+        richness_city = (self.amrs + 0.000000001).apply(richness, axis=1)
+        richness_city = pd.concat([self.meta['city'], self.meta['continent'], richness_city], axis=1)
+        richness_city.columns = ['city', 'continent', 'richness']
+        richness_city = richness_city.dropna()
+
+        cities = richness_city['city'].value_counts()
+        richness_city = richness_city.loc[richness_city['city'].isin(cities[cities > 3].index)]
+        richness_city = richness_city.groupby('city').filter(lambda tbl: sum(tbl['richness'] > 0) >= 3)
+
+        return (
+            ggplot(richness_city, aes(x='richness', fill='continent')) +
+                geom_density(size=0.5) +
+                facet_grid('city~.', scales="free_y") +
+                theme_minimal() +
+                ylab('Density') +
+                xlab('Number of AMRs Detected') +
+                scale_x_log10() +
+                scale_fill_brewer(type='qualitative', palette=3, direction=1) +
+                labs(fill="Region") +
+                theme(
+                    axis_text_x=element_text(angle=0, hjust=1),
+                    axis_text_y=element_blank(),
+                    strip_text_y=element_text(angle=0, hjust=0),
+                    text=element_text(size=20),
+                    panel_grid_major=element_blank(),
+                    panel_grid_minor=element_blank(),
+                    legend_position='bottom'
+                )
+        )
 
     def fig5_amr_rarefaction(self):
         """Return a P9 rarefaction curve for amr genes."""
+        ns = range(1, self.amrs.shape[0], 10)
+        rare = rarefaction_analysis(self.amrs, ns=ns)
+        return (
+            ggplot(rare, aes(x='N', y='Taxa')) +
+                geom_point(size=4, colour="black") +
+                geom_smooth() +
+                theme_minimal() +
+                theme(
+                    text=element_text(size=50),
+                )
+        )
 
     def fig5_amr_tree(self):
         """Return an ETE tree showing major AMR types with relative abundances by region."""

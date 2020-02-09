@@ -3,13 +3,13 @@ from setuptools import setup
 microlib_name = 'metasub_utils.packet_parse'
 
 requirements = [
-    'capalyzer',
+    'capalyzer>=2.15.7',
     'pandas',
 ]
 
 setup(
     name=microlib_name,
-    version='0.3.4',
+    version='0.3.12',
     author='David Danko',
     author_email='dcdanko@gmail.com',
     license='MIT license',
