@@ -117,11 +117,12 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 annotate(geom='label', x=0.65, y=2.9, label="Sub-Core 70-95% (1,084)", size=10) +
                 annotate(geom='label', x=0.33, y=3.5, label="Peripheral, < 25% (2,466)", size=10) +
                 annotate(geom='label', x=0.78, y=3.2, label="Core > 95% (61)", size=10) +
-                scale_color_brewer(palette="Set1", direction=-1) +
-                scale_fill_brewer(palette="Set1", direction=-1) +
+                scale_color_brewer(type='qualitative', palette=6, direction=1) +
+                scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                 theme(
-                    text=element_text(size=50),
+                    text=element_text(size=20),
                     axis_text_x=element_text(angle=0, hjust=1),
+                    figure_size=(8, 8),
                     legend_position='none',
                 )
         )
@@ -135,8 +136,8 @@ class MetaSUBFigures(MetaSUBFiguresData):
         top_taxa = taxa.mean().sort_values(ascending=False)[:N].index
         taxa, city = 1000 * 1000 * taxa[top_taxa], 1000 * 1000 * city[top_taxa]
         taxa_prev, city_prev = prevalence(taxa), prevalence(city)
-        taxa_prev = pd.DataFrame({'prevalence': taxa_prev, 'names': taxa_prev.index})
-        city_prev = pd.DataFrame({'prevalence': city_prev, 'names': city_prev.index})
+        taxa_prev = pd.DataFrame({'taxon': taxa_prev.index, 'prevalence': taxa_prev, 'names': taxa_prev.index})
+        city_prev = pd.DataFrame({'taxon': city_prev.index, 'prevalence': city_prev, 'names': city_prev.index})
         taxa_mean, taxa_kurtosis, taxa_sd = taxa.mean(), taxa.kurtosis(), taxa.std()
 
         def add_stats(taxon):
@@ -145,42 +146,49 @@ class MetaSUBFigures(MetaSUBFiguresData):
 
         taxa.columns = taxa.columns.to_series().apply(add_stats)
         city.columns = city.columns.to_series().apply(add_stats)
+        top_taxa_stat = top_taxa.to_series().apply(add_stats)
 
         taxa, city = taxa.melt(), city.melt()
+        taxa['variable'] = pd.Categorical(taxa['variable'], categories=top_taxa_stat)
+        city['variable'] = pd.Categorical(city['variable'], categories=top_taxa_stat)
         taxa['kind'] = 'All Samples'
         city['kind'] = 'City Median'
         both = pd.concat([taxa, city])
         abund = (
             ggplot(both, aes(x='value', color='kind')) +
-                geom_density(size=0.5) +
+                geom_density(size=1) +
                 facet_grid('variable~.', scales="free_y") +
                 theme_minimal() +
                 ylab('Density') +
                 xlab('Abundance (PPM)') +
                 scale_x_log10() +
-                scale_color_brewer(palette="Set1") +
-                labs(color="") +
+                scale_color_brewer(type='qualitative', palette=6, direction=1) +
+                labs(fill="") +
                 theme(
                     axis_text_x=element_text(angle=0, hjust=1),
-                    axis_text_y=element_blank(),
                     strip_text_y=element_text(angle=0, hjust=0),
-                    text=element_text(size=15),
+                    text=element_text(size=20),
                     panel_grid_major_x=element_line(colour="grey", size=0.75),
                     panel_grid_major_y=element_blank(),
                     panel_grid_minor=element_blank(),
-                    legend_position='bottom',
+                    legend_position='none',
+                    axis_title_y=element_blank(),
+                    axis_text_y=element_blank(),
+                    figure_size=(4, 40),
                 )
         )
         taxa_prev['kind'] = 'All Samples'
         city_prev['kind'] = 'City Median'
+        taxa_prev['taxon'] = pd.Categorical(taxa_prev['taxon'], categories=top_taxa)
+        city_prev['taxon'] = pd.Categorical(city_prev['taxon'], categories=top_taxa)
         both_prev = pd.concat([taxa_prev, city_prev])
         prev = (
-            ggplot(both_prev, aes(x='kind', y='value', fill='kind')) +
+            ggplot(both_prev, aes(x='kind', y='prevalence', fill='kind')) +
                 geom_col() +
                 facet_grid('taxon~.', scales="free_y") +
                 theme_minimal() +
                 ylab('Prevalence') +
-                scale_fill_brewer(type='qualitative', palette=3, direction=1) +
+                scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                 labs(color="") +
                 coord_flip() +
                 scale_y_continuous(breaks=(0.1, 0.5, 1)) +
@@ -189,24 +197,26 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     axis_text_y=element_blank(),
                     axis_title_y=element_blank(),
                     strip_text_y=element_blank(),
-                    text=element_text(size=15),
+                    text=element_text(size=20),
                     panel_grid_major=element_blank(),
-                    legend_position='bottom'
+                    legend_position='left',
+                    figure_size=(2, 40),
                 )
         )
         return abund, prev
 
-    def fig1_species_rarefaction(self):
+    def fig1_species_rarefaction(self, w=100):
         """Return a P9 rarefaction curve for species."""
-        ns = range(1, self.wide_taxa.shape[0], 100)
+        ns = range(w, self.wide_taxa.shape[0], w)
         rare = rarefaction_analysis(self.wide_taxa, ns=ns)
         return (
             ggplot(rare, aes(x='N', y='Taxa')) +
                 geom_point(size=4, colour="black") +
-                geom_smooth() +
+                geom_smooth(color='blue') +
                 theme_minimal() +
                 theme(
-                    text=element_text(size=50),
+                    text=element_text(size=20),
+                    figure_size=(8, 8),
                 )
         )
 
@@ -221,13 +231,14 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     theme_minimal() +
                     scale_y_sqrt() +
                     ylim(0, 0.5) +
-                    scale_fill_brewer(type='qualitative', palette=3, direction=1) +
+                    scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                     xlab('') +
                     ylab(y_lab) +
                     geom_hline(yintercept=yint, color='red', size=4) +
-                    annotate(geom='label', x='Oceania', y=(yint - 0.15), label=yint_lab, size=30) +
+                    annotate(geom='label', x='Oceania', y=(yint - 0.015), label=yint_lab, size=20) +
                     theme(
-                        text = element_text(size=80),
+                        text=element_text(size=20),
+                        figure_size=(8, 8),
                         legend_position='none',
                         axis_text_x=element_text(angle=90),
                     )
@@ -244,17 +255,18 @@ class MetaSUBFigures(MetaSUBFiguresData):
     def fig1_fraction_unclassified(self):
         """Return a figure showing the fraction of reads which could not be classified."""
         return (
-            ggplot(self.rps, aes(x='continent', y='unknown', fill='surface')) +
+            ggplot(self.rps, aes(x='continent', y='unknown', fill='continent')) +
                 geom_violin() +
                 geom_boxplot(fill='white', width=0.1) +
                 theme_minimal() +
-                scale_fill_brewer(palette='Set2') +
+                scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                 xlab('Region') +
                 ylab('Fraction Unclassified DNA') +
                 theme(
-                    text=element_text(size=50),
-                    legend_position='bottom',
-                    axis_text_x=element_text(angle=30),
+                    text=element_text(size=20),
+                    axis_text_x=element_text(hjust=1, angle=30),
+                    figure_size=(8, 8),
+                    legend_position='none',
                 )
         )
 
@@ -320,7 +332,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 ggplot(tbl, aes(x='sample', y='value', fill='variable', group='continent')) +
                     geom_col() +
                     facet_grid('.~continent', scales="free") +
-                    scale_fill_brewer(palette="Set3", direction=1) +
+                    scale_color_brewer(type='qualitative', palette=3, direction=1) +
                     theme_minimal() +
                     scale_y_sqrt(expand=(0, 0)) +
                     labs(fill=label) +
