@@ -30,6 +30,12 @@ def floatif(val):
         return val
 
 
+def titlecase(el):
+    tkns = el.split()
+    tkns = [tkn[0].upper() + tkn[1:].lower() for tkn in tkns]
+    return ' '.join(tkns)
+
+
 @pangea.command('create-samples')
 @click.option('-c', '--city-name', default=None)
 @click.option('-t', '--taxa-table', default=None)
@@ -38,6 +44,10 @@ def floatif(val):
 def cli_create_samples(city_name, taxa_table, username, password):
     """List unassembled data in the wasabi bucket."""
     knex = Knex().login(username, password)
+    if city_name:
+        group_name = f'MetaSUB {titlecase(city_name)}'
+        group_desc = f'MetaSUB samples from {titlecase(city_name)}'
+        group_uuid = knex.get_or_add_sample_group(group_name, group_desc)
     metadata = get_complete_metadata()
     if taxa_table:
         taxa_table = proportions(pd.read_csv(taxa_table, index_col=0))
@@ -49,6 +59,8 @@ def cli_create_samples(city_name, taxa_table, username, password):
             if str(v).lower() != 'nan'
         }))
         sample = knex.add_sample(sample_name, metadata=sample_metadata)
+        if city_name:
+            knex.add_sample_to_sample_group(sample['uuid'], group_uuid)
         result = knex.add_sample_result(sample['uuid'], 'nonhuman_reads')
         knex.add_sample_result_field(result['uuid'], 'read_1', s3uri(reads[0]))
         knex.add_sample_result_field(result['uuid'], 'read_2', s3uri(reads[1]))

@@ -52,9 +52,51 @@ class Knex:
         response.raise_for_status()
         return response.json()
 
+    def get_or_add_sample_group(self, group_name, desc):
+        groups = self.list_sample_groups()
+        grp = [grp for grp in groups if grp['name'] == group_name]
+        if grp:
+            return grp[0]['uuid']
+        return self.add_sample_group(group_name, desc)['uuid']
+
+    def add_sample_group(self, group_name, desc):
+        response = requests.post(
+            f'{ENDPOINT}/sample_groups',
+            headers=self.headers,
+            auth=self.auth,
+            json={
+                'name': group_name,
+                'organization': self.metasub_org_uuid,
+                'description': desc,
+            }
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def add_sample_to_sample_group(self, sample_uuid, group_uuid):
+        response = requests.post(
+            f'{ENDPOINT}/sample_groups/{group_uuid}/samples',
+            headers=self.headers,
+            auth=self.auth,
+            json={
+                'sample_uuid': sample_uuid,
+            }
+        )
+        response.raise_for_status()
+        return response.json()
+
     def list_sample_groups(self):
         response = requests.get(
             f'{ENDPOINT}/sample_groups?format=json',
+            headers=self.headers,
+            auth=self.auth,
+        )
+        response.raise_for_status()
+        return response.json()['results']
+
+    def list_organizations(self):
+        response = requests.get(
+            f'{ENDPOINT}/organizations?format=json',
             headers=self.headers,
             auth=self.auth,
         )
@@ -109,4 +151,13 @@ class Knex:
     def get_metasub_library_uuid(self):
         groups = self.list_sample_groups()
         metasub = [grp for grp in groups if grp['name'] == 'MetaSUB'][0]
+        return metasub['uuid']
+
+    @property
+    def metasub_org_uuid(self):
+        return self.get_metasub_org_uuid()
+
+    def get_metasub_org_uuid(self):
+        orgs = self.list_organizations()
+        metasub = [org for org in orgs if org['name'] == 'MetaSUB Consortium'][0]
         return metasub['uuid']
