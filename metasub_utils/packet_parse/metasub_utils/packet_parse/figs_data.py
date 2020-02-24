@@ -37,7 +37,21 @@ class MetaSUBFiguresData:
 
     def __init__(self, packet_dir, ncbi_tree=None):
         self.tabler = DataTableFactory(packet_dir, metadata_tbl='metadata/complete_metadata.csv')
-        self.tabler.metadata['continent'] = self.tabler.metadata['continent'].map(to_title)
+        self.tabler.metadata = add_ontology(self.tabler.metadata)
+        self.tabler.metadata['continent'] = pd.Categorical(
+            self.tabler.metadata['continent'].map(to_title),
+            categories=[
+                'North America',
+                'East Asia',
+                'Europe',
+                'South America',
+                'Oceania',
+                'Sub Saharan Africa',
+                'Middle east',
+                'Nan',
+            ]
+        )
+        self.tabler.metadata['city'] = self.tabler.metadata['city'].amp(to_title)
         self.meta = self.tabler.metadata
         self._ncbi_tree = ncbi_tree
 
@@ -72,6 +86,10 @@ class MetaSUBFiguresData:
         return self.build_amrs()
 
     @property
+    def amr_genes(self):
+        return self.build_amr_genes()
+
+    @property
     def emp(self):
         return self.build_soil_comparison()
 
@@ -93,6 +111,7 @@ class MetaSUBFiguresData:
         emp['continent'] = [self.meta.loc[sn]['continent'] for sn in emp['sample_name']]
         # emp['surface'] = [self.meta.loc[sn]['surface_ontology_fine'] for sn in emp['sample_name']]
         emp = emp.dropna()
+        emp = emp.query('continent != "Nan"')
         return emp
 
     def build_hmp_comparison(self):
@@ -104,6 +123,7 @@ class MetaSUBFiguresData:
         hmp['continent'] = [self.meta.loc[sn]['continent'] for sn in hmp['sample_name']]
         # hmp['surface'] = [self.meta.loc[sn]['surface_ontology_fine'] for sn in hmp['sample_name']]
         hmp = hmp.dropna()
+        hmp = hmp.query('continent != "Nan"')
         return hmp
 
     def build_wide_taxonomy(self):
@@ -179,6 +199,12 @@ class MetaSUBFiguresData:
         amrs = (amrs.T / (amrs.T.sum() + 0.000001)).T
         return amrs
 
+    def build_amr_genes(self):
+        """TODO: REVIEW."""
+        amrs = self.tabler.amrs(kind='gene', remove_zero_rows=False).dropna()
+        amrs = (amrs.T / (amrs.T.sum() + 0.000001)).T
+        return amrs
+
     def build_unclassified(self):
         non_human_unkown = (rps['unknown'] / (1 - rps['host'])).mean()
         non_human_known = 1 - non_human_unkown
@@ -189,4 +215,6 @@ class MetaSUBFiguresData:
         rps['continent'] = self.tabler.metadata['continent']
         # rps['surface'] = self.tabler.metadata['surface_ontology_fine']
         rps = rps.dropna()
+        rps = rps.query('continent != "Nan"')
+
         return rps

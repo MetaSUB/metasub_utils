@@ -14,7 +14,7 @@ def list_public_files():
     return out
 
 
-def list_nonhuman_reads(sample_names=None, city_name=None, project_name=None, grouped=False):
+def nonhuman_reads(sample_names=None, city_name=None, project_name=None):
     samples = set()
     if city_name or project_name:
         samples |= set(get_samples_from_city(city_name, project_name=project_name))
@@ -31,6 +31,11 @@ def list_nonhuman_reads(sample_names=None, city_name=None, project_name=None, gr
             continue
         nonhuman_read_files[sname] = sorted([nonhuman_read] + nonhuman_read_files.get(sname, []))
 
+    return nonhuman_read_files
+
+
+def list_nonhuman_reads(sample_names=None, city_name=None, project_name=None, grouped=False):
+    nonhuman_read_files = nonhuman_reads(sample_names=sample_names, city_name=city_name, project_name=project_name)
     raw_list = []
     for read_files in nonhuman_read_files.values():
         if not grouped:

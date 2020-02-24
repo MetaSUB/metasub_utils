@@ -114,9 +114,9 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 geom_vline(xintercept=0.25, color='black') +
                 geom_vline(xintercept=0.70, color='black') +
                 geom_vline(xintercept=0.95, color='black') +
-                annotate(geom='label', x=0.65, y=2.9, label="Sub-Core 70-95% (1,084)", size=10) +
-                annotate(geom='label', x=0.33, y=3.5, label="Peripheral, < 25% (2,466)", size=10) +
-                annotate(geom='label', x=0.78, y=3.2, label="Core > 95% (61)", size=10) +
+                annotate(geom='label', x=0.65, y=2.9, label="Sub-Core 70-95% (1,084)", size=20) +
+                annotate(geom='label', x=0.33, y=3.5, label="Peripheral, < 25% (2,466)", size=20) +
+                annotate(geom='label', x=0.78, y=3.2, label="Core > 95% (61)", size=20) +
                 scale_color_brewer(type='qualitative', palette=6, direction=1) +
                 scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                 theme(
@@ -175,6 +175,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     axis_title_y=element_blank(),
                     axis_text_y=element_blank(),
                     figure_size=(4, 40),
+                    panel_border=element_rect(colour="black", fill='none', size=1),
                 )
         )
         taxa_prev['kind'] = 'All Samples'
@@ -201,6 +202,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     panel_grid_major=element_blank(),
                     legend_position='left',
                     figure_size=(2, 40),
+                    panel_border=element_rect(colour="black", fill='none', size=1),
                 )
         )
         return abund, prev
@@ -214,6 +216,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 geom_point(size=4, colour="black") +
                 geom_smooth(color='blue') +
                 theme_minimal() +
+                xlab('Num. Samples') +
                 theme(
                     text=element_text(size=20),
                     figure_size=(8, 8),
@@ -285,12 +288,13 @@ class MetaSUBFigures(MetaSUBFiguresData):
         taxa_umap['climate'] = self.meta['city_koppen_climate']
         taxa_umap['lat'] = self.meta['latitude']
         taxa_umap['lon'] = self.meta['longitude']
+        taxa_umap = taxa_umap.query('continent != "Nan"')
         plot = (
             ggplot(taxa_umap, aes(x='C0', y='C1', color='continent')) +
                 geom_point(size=5.5, colour="black") +
                 geom_point(size=4) +
                 theme_minimal() +
-                scale_color_brewer(type='qualitative', palette=3, direction=1) +
+                scale_color_brewer(type='qualitative', palette=6, direction=1) +
                 theme_minimal() +
                 coord_flip() +
                 theme(
@@ -303,6 +307,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     axis_text_y=element_blank(),
                     axis_title_y=element_blank(),
                     panel_border=element_rect(colour="black", fill='none', size=2),
+                    figure_size=(16, 12),
                 )
         )
         return plot
@@ -320,12 +325,14 @@ class MetaSUBFigures(MetaSUBFiguresData):
         phyla['continent'] = self.meta['continent']
         phyla = phyla.melt(id_vars=['sample', 'continent'])
         phyla = phyla.dropna()
+        phyla = phyla.query('continent != "Nan"')
 
         amrs = group_small_cols(self.amrs, top=5)
         amrs['sample'] = amrs.index
         amrs['continent'] = self.meta['continent']
         amrs = amrs.melt(id_vars=['sample', 'continent'])
         amrs = amrs.dropna()
+        amrs = amrs.query('continent != "Nan"')
 
         def my_plot(tbl, label):
             return (
@@ -337,7 +344,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     scale_y_sqrt(expand=(0, 0)) +
                     labs(fill=label) +
                     theme(
-                        text=element_text(size=70),
+                        text=element_text(size=20),
                         panel_grid_major=element_blank(),
                         panel_grid_minor=element_blank(),
                         legend_position='bottom',
@@ -346,6 +353,7 @@ class MetaSUBFigures(MetaSUBFiguresData):
                         axis_text_y=element_blank(),
                         axis_title_y=element_blank(),
                         panel_border=element_rect(colour="black", size=2),
+                        figure_size=(32, 4),
                     )
             )
 
@@ -384,13 +392,13 @@ class MetaSUBFigures(MetaSUBFiguresData):
             var_bars[covar] = [str(el[1]) for el in var_bars.index]
             return var_bars
 
-        def my_plot(covar, label):
+        def my_plot(covar, label, pal):
             bars = variance_bars(covar)
             return (
                 ggplot(bars, aes(x='variable', y='value', fill=covar)) +
                     geom_bar(stat='identity') +
                     theme_minimal() +
-                    scale_fill_brewer(palette='Set2') +
+                    scale_fill_brewer(type='qualitative', palette=pal, direction=1) +
                     xlab('Principal Components') +
                     ylab('Mean Value of Covariate') +
                     labs(fill=label) +
@@ -398,17 +406,20 @@ class MetaSUBFigures(MetaSUBFiguresData):
                     ylim(-0.3, 0.5) +
                     ggtitle(label) +
                     theme(
-                        text=element_text(size=50),
+                        text=element_text(size=20),
+                        figure_size=(5, 12),
                         panel_grid_minor=element_blank(),
                         legend_position='right',
                     )
             )
 
-        return [
-            my_plot('city_koppen_climate', 'Climate'),
-            my_plot('continent', 'Region'),
-            my_plot('surface', 'Surface'),
+        out = [
+            my_plot('city_koppen_climate', 'Climate', 3),
+            my_plot('continent', 'Region', 6),
+            my_plot('surface', 'Surface', 2),
         ]
+        out = [el + theme(legend_position='none') for el in out] + out
+        return out
 
     def fig5_amrs(self):
         """Figure showing the major AMRs found by MetaSUB."""
@@ -419,9 +430,11 @@ class MetaSUBFigures(MetaSUBFiguresData):
             self.fig5_amr_tree(),
         ]
 
-    def fig5_amr_cooccur(self):
+    def fig5_amr_cooccur(self, thresh=0.01):
         """Return a heatmap showing co-occurence between AMR genes."""
-        tbl = self.amrs > 0
+        tbl = (self.amr_genes > 0)
+        tbl = tbl[tbl.mean() > thresh]
+        tbl = tbl.T
         amr_jaccard = 1 - pd.DataFrame(
             squareform(pdist(tbl, metric='jaccard')),
             index=tbl.index, columns=tbl.index
@@ -448,15 +461,19 @@ class MetaSUBFigures(MetaSUBFiguresData):
 
     def fig5_amr_richness_by_city(self):
         """Return a figure showing the distribution of the number of AMR genes by city."""
-        richness_city = (self.amrs + 0.000000001).apply(richness, axis=1)
+        richness_city = self.amr_genes.apply(lambda row: richness(row, count=True), axis=1)
         richness_city = pd.concat([self.meta['city'], self.meta['continent'], richness_city], axis=1)
         richness_city.columns = ['city', 'continent', 'richness']
         richness_city = richness_city.dropna()
+        richness_city = richness_city.query('continent != "Nan"')
 
         cities = richness_city['city'].value_counts()
         richness_city = richness_city.loc[richness_city['city'].isin(cities[cities > 3].index)]
         richness_city = richness_city.groupby('city').filter(lambda tbl: sum(tbl['richness'] > 0) >= 3)
-
+        richness_city['city'] = pd.Categorical(
+            richness_city['city'],
+            categories=richness_city.groupby('city').mean()['richness'].sort_values(ascending=False).index
+        )
         return (
             ggplot(richness_city, aes(x='richness', fill='continent')) +
                 geom_density(size=0.5) +
@@ -465,30 +482,34 @@ class MetaSUBFigures(MetaSUBFiguresData):
                 ylab('Density') +
                 xlab('Number of AMRs Detected') +
                 scale_x_log10() +
-                scale_fill_brewer(type='qualitative', palette=3, direction=1) +
+                scale_fill_brewer(type='qualitative', palette=6, direction=1) +
                 labs(fill="Region") +
                 theme(
                     axis_text_x=element_text(angle=0, hjust=1),
                     axis_text_y=element_blank(),
                     strip_text_y=element_text(angle=0, hjust=0),
                     text=element_text(size=20),
+                    figure_size=(6, 24),
                     panel_grid_major=element_blank(),
                     panel_grid_minor=element_blank(),
-                    legend_position='bottom'
+                    legend_position='none'
                 )
         )
 
-    def fig5_amr_rarefaction(self):
+    def fig5_amr_rarefaction(self, w=100):
         """Return a P9 rarefaction curve for amr genes."""
-        ns = range(1, self.amrs.shape[0], 10)
-        rare = rarefaction_analysis(self.amrs, ns=ns)
+        ns = range(w, self.amr_genes.shape[0], w)
+        rare = rarefaction_analysis(self.amr_genes, ns=ns)
         return (
             ggplot(rare, aes(x='N', y='Taxa')) +
                 geom_point(size=4, colour="black") +
-                geom_smooth() +
+                geom_smooth(color='blue') +
                 theme_minimal() +
+                xlab('Num. Samples') +
+                ylab('AMR Genes') +
                 theme(
-                    text=element_text(size=50),
+                    text=element_text(size=20),
+                    figure_size=(8, 8),
                 )
         )
 
